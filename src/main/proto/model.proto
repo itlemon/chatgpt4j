@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package model;
+
+import "google/protobuf/any.proto";
+
+option java_multiple_files = true;
+option java_package = "cn.codingguide.chatgpt4j.model";
+
+message ModelResponse {
+
+  // data类型，这里是list
+  string object = 1;
+
+  // 模型
+  repeated Model data = 2;
+
+}
+
+message Model {
+
+  // 模型ID
+  string id = 1;
+
+  // 对象，一般为model
+  string object = 2;
+
+  // 时间戳，单位s
+  uint64 created = 3;
+
+  // owner
+  string owned_by = 4 [json_name = "owned_by"];
+
+  // 权限列表
+  repeated Permission permission = 5;
+
+  string root = 6;
+
+  // 暂时未知类型
+  google.protobuf.Any parent = 7;
+
+}
+
+// 权限
+message Permission {
+
+  // 模型权限ID
+  string id = 1;
+
+  // 对象，一般为model_permission
+  string object = 2;
+
+  // 时间戳，单位s
+  uint64 created = 3;
+
+  bool allow_create_engine = 4 [json_name = "allow_create_engine"];
+
+  bool allow_sampling = 5 [json_name = "allow_sampling"];
+
+  bool allow_logprobs = 6 [json_name = "allow_logprobs"];
+
+  bool allow_search_indices = 7 [json_name = "allow_search_indices"];
+
+  bool allow_view = 8 [json_name = "allow_view"];
+
+  bool allow_fine_tuning = 9 [json_name = "allow_fine_tuning"];
+
+  // 组织
+  string organization = 10;
+
+  // 暂时未知类型
+  google.protobuf.Any group = 11;
+
+  bool is_blocking = 12 [json_name = "is_blocking"];
+
+}
