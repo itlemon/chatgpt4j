@@ -21,6 +21,12 @@ public class ChatGpt4jException extends RuntimeException {
         this.msg = msg;
     }
 
+    public ChatGpt4jException(int code, String msg) {
+        super(msg);
+        this.code = code;
+        this.msg = msg;
+    }
+
     public ChatGpt4jException() {
         super(ChatGptExceptionMsg.COMMON_SYSTEM_ERROR.msg());
         this.code = ChatGptExceptionMsg.COMMON_SYSTEM_ERROR.code();

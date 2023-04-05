@@ -16,7 +16,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>4.13.2</junit.version>
-        <protobuf-java.version>3.22.2</protobuf-java.version>
         <guava.version>31.1-jre</guava.version>
         <hutool.version>5.8.16</hutool.version>
         <slf4j.version>2.0.7</slf4j.version>
@@ -31,20 +30,6 @@
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
-        <dependency>
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
-            <version>${protobuf-java.version}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java-util -->
-        <dependency>
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java-util</artifactId>
-            <version>${protobuf-java.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
@@ -95,18 +80,20 @@
             <version>${retrofit2.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-protobuf -->
-        <dependency>
-            <groupId>com.squareup.retrofit2</groupId>
-            <artifactId>converter-protobuf</artifactId>
-            <version>${retrofit2.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>com.squareup.retrofit2</groupId>
             <artifactId>adapter-rxjava2</artifactId>
             <version>${retrofit2.version}</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-gson -->
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>converter-gson</artifactId>
+            <version>${retrofit2.version}</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
@@ -117,32 +104,5 @@
                 <version>1.7.1</version>
             </extension>
         </extensions>
-        <plugins>
-            <plugin>
-                <groupId>org.xolstice.maven.plugins</groupId>
-                <artifactId>protobuf-maven-plugin</artifactId>
-                <version>0.6.1</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <!-- 工具版本，Mac M1版本请参考:https://github.com/grpc/grpc-java/issues/7690 -->
-                    <protocArtifact>com.google.protobuf:protoc:3.21.0:exe:${os.detected.classifier}
-                    </protocArtifact>
-                    <!--默认值，proto源文件路径-->
-                    <protoSourceRoot>${project.basedir}/src/main/proto</protoSourceRoot>
-                    <!--设置是否在生成java文件之前清空outputDirectory的文件，默认值为true，设置为false时也会覆盖同名文件-->
-                    <clearOutputDirectory>true</clearOutputDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <!--在执行mvn compile的时候会执行以下操作-->
-                        <phase>compile</phase>
-                        <goals>
-                            <!--生成OuterClass类-->
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
     </build>
 </project>

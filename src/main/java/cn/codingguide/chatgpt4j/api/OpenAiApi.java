@@ -1,6 +1,6 @@
 package cn.codingguide.chatgpt4j.api;
 
-import cn.codingguide.chatgpt4j.model.ModelResponse;
+import cn.codingguide.chatgpt4j.domain.models.ModelResponse;
 import io.reactivex.Single;
 import retrofit2.http.GET;
 

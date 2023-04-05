@@ -1,7 +1,7 @@
 package cn.codingguide.chatgpt4j.client;
 
 import cn.codingguide.chatgpt4j.DefaultChatGptClient;
-import cn.codingguide.chatgpt4j.model.Model;
+import cn.codingguide.chatgpt4j.domain.models.Model;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,9 +17,9 @@ public class DefaultChatGptClientTest {
     private DefaultChatGptClient client;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         client = DefaultChatGptClient.newBuilder()
-                .apiKeys(Arrays.asList("sk-****"))
+                .apiKeys(Arrays.asList("sk-*******"))
                 .enableHttpDetailLog(true)
                 .build();
     }

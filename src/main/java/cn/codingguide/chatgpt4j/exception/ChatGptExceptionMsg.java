@@ -10,7 +10,16 @@ public enum ChatGptExceptionMsg implements IExceptionMsg {
      * 内部预定错误类型
      */
     API_KEY_LIST_NOT_EMPTY(500, "Api key list must be not empty."),
-    COMMON_SYSTEM_ERROR(500, "Common system error.");
+    COMMON_SYSTEM_ERROR(500, "Common system error."),
+
+    /**
+     * Open AI相关的错误，参考链接：<a href="https://platform.openai.com/docs/guides/error-codes/api-errors">链接</a>
+     */
+    OPEN_AI_AUTHENTICATION_ERROR(401,
+            "Invalid Authentication | The requesting API key is not correct | Your account is not part of an organization"),
+    OPEN_AI_RESOURCE_LIMIT_ERROR(429,
+            "You are sending requests too quickly | You exceeded your current quota | Our servers are experiencing high traffic"),
+    OPENAI_SERVER_ERROR(500, "The server (openai.com) had an error while processing your request");
 
 
     private final int code;

@@ -6,21 +6,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import cn.codingguide.chatgpt4j.domain.models.Model;
+import cn.codingguide.chatgpt4j.domain.models.ModelResponse;
 import cn.codingguide.chatgpt4j.exception.ChatGpt4jException;
 import cn.codingguide.chatgpt4j.exception.ChatGptExceptionMsg;
 import cn.codingguide.chatgpt4j.interceptor.AuthorizationInterceptor;
 import cn.codingguide.chatgpt4j.interceptor.ResponseInterceptor;
 import cn.codingguide.chatgpt4j.key.RandomKeySelectorStrategy;
-import cn.codingguide.chatgpt4j.model.Model;
-import cn.codingguide.chatgpt4j.model.ModelResponse;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
-import io.reactivex.Scheduler;
 import io.reactivex.Single;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +26,7 @@ import cn.codingguide.chatgpt4j.key.KeySelectorStrategy;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.protobuf.ProtoConverterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * 默认的ChatGPT客户端
@@ -93,7 +90,7 @@ public class DefaultChatGptClient {
                 .baseUrl(apiHost)
                 .client(okHttpClient)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(ProtoConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(OpenAiApi.class);
     }
@@ -155,7 +152,7 @@ public class DefaultChatGptClient {
      */
     public List<Model> models() {
         Single<ModelResponse> models = api.models();
-        return models.blockingGet().getDataList();
+        return models.blockingGet().getData();
     }
 
     /**
