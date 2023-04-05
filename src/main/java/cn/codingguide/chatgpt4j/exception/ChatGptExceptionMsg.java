@@ -9,7 +9,8 @@ public enum ChatGptExceptionMsg implements IExceptionMsg {
     /**
      * 内部预定错误类型
      */
-    API_KEY_LIST_NOT_EMPTY(500, "Api key list must be not empty.");
+    API_KEY_LIST_NOT_EMPTY(500, "Api key list must be not empty."),
+    COMMON_SYSTEM_ERROR(500, "Common system error.");
 
 
     private final int code;

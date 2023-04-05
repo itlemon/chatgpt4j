@@ -37,7 +37,9 @@ message Model {
   string root = 6;
 
   // 暂时未知类型
-  google.protobuf.Any parent = 7;
+  oneof optional {
+    string parent = 7;
+  }
 
 }
 
@@ -69,7 +71,9 @@ message Permission {
   string organization = 10;
 
   // 暂时未知类型
-  google.protobuf.Any group = 11;
+  oneof optional {
+    string group = 11;
+  }
 
   bool is_blocking = 12 [json_name = "is_blocking"];
 
