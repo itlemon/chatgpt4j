@@ -33,6 +33,7 @@ public class ResponseInterceptor implements Interceptor {
             // 请求失败
             int responseCode = response.code();
             if (responseCode == ChatGptExceptionMsg.OPEN_AI_AUTHENTICATION_ERROR.code()
+                    || responseCode == ChatGptExceptionMsg.OPEN_AI_NOT_FOUND_ERROR.code()
                     || responseCode == ChatGptExceptionMsg.OPEN_AI_RESOURCE_LIMIT_ERROR.code()
                     || responseCode == ChatGptExceptionMsg.OPENAI_SERVER_ERROR.code()) {
                 ResponseBody body = response.body();

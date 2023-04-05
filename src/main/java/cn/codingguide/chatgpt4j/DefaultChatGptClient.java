@@ -148,11 +148,25 @@ public class DefaultChatGptClient {
     /**
      * 获取Open AI模型列表
      *
-     * @return Model list
+     * @return 模型列表
      */
     public List<Model> models() {
         Single<ModelResponse> models = api.models();
         return models.blockingGet().getData();
+    }
+
+    /**
+     * 获取OpenAI模型详情
+     *
+     * @param id 模型ID
+     * @return 模型详情
+     */
+    public Model model(@NotNull String id) {
+        if (StrUtil.isBlank(id)) {
+            throw new ChatGpt4jException(ChatGptExceptionMsg.INVALID_PARAM_ERROR);
+        }
+        Single<Model> model = api.model(id);
+        return model.blockingGet();
     }
 
     /**

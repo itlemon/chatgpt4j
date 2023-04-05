@@ -19,7 +19,7 @@ public class DefaultChatGptClientTest {
     @Before
     public void setUp() {
         client = DefaultChatGptClient.newBuilder()
-                .apiKeys(Arrays.asList("sk-*******"))
+                .apiKeys(Arrays.asList("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"))
                 .enableHttpDetailLog(true)
                 .build();
     }
@@ -30,8 +30,16 @@ public class DefaultChatGptClientTest {
         models.forEach(e -> {
             System.out.print(e.getOwnedBy() + " ");
             System.out.print(e.getId() + " ");
-            System.out.println(e.getObject() + " ");
+            System.out.println(e.getObject());
         });
     }
+
+    @Test
+    public void model() {
+        Model model = client.model("text-search-ada-query-001");
+        System.out.println(model);
+    }
+
+
 
 }
