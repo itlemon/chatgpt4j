@@ -19,7 +19,7 @@ public class DefaultChatGptClientTest {
     @Before
     public void setUp() {
         client = DefaultChatGptClient.newBuilder()
-                .apiKeys(Arrays.asList("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"))
+                .apiKeys(Arrays.asList("sk-*****"))
                 .enableHttpDetailLog(true)
                 .build();
     }
