@@ -1,5 +1,7 @@
 package cn.codingguide.chatgpt4j.api;
 
+import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
+import cn.codingguide.chatgpt4j.domain.completions.CompletionResponse;
 import cn.codingguide.chatgpt4j.domain.models.Model;
 import cn.codingguide.chatgpt4j.domain.models.ModelResponse;
 import io.reactivex.Single;
@@ -43,7 +45,7 @@ public interface OpenAiApi {
      * @return 返回回答内容
      */
     @POST("v1/completions")
-    Single<CompletionResponse> completions(@Body Completion completion);
+    Single<CompletionResponse> completions(@Body CompletionRequest completion);
 
 
 }

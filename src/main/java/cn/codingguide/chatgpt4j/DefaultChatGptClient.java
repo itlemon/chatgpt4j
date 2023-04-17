@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
+import cn.codingguide.chatgpt4j.domain.completions.CompletionResponse;
 import cn.codingguide.chatgpt4j.domain.models.Model;
 import cn.codingguide.chatgpt4j.domain.models.ModelResponse;
 import cn.codingguide.chatgpt4j.exception.ChatGpt4jException;
@@ -19,6 +21,7 @@ import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import io.reactivex.Single;
 import okhttp3.logging.HttpLoggingInterceptor;
+
 import org.jetbrains.annotations.NotNull;
 
 import cn.codingguide.chatgpt4j.api.OpenAiApi;
@@ -78,7 +81,7 @@ public class DefaultChatGptClient {
         // 设置API KEY选择策略
         KeySelectorStrategy<List<String>, String> apiSelectorStrategyTemp;
         keySelectorStrategy = Objects.isNull(apiSelectorStrategyTemp = builder.keySelectorStrategy) ?
-                new RandomKeySelectorStrategy() : apiSelectorStrategyTemp;
+                              new RandomKeySelectorStrategy() : apiSelectorStrategyTemp;
 
         // 设置okHttpClient
         okHttpClient = warpOkHttpClient(Objects.isNull(builder.okHttpClient) ? okHttpClient() : builder.okHttpClient,
@@ -124,7 +127,7 @@ public class DefaultChatGptClient {
     /**
      * 将用户自定义的okHttpClient包装一下，主要是设置了请求头
      *
-     * @param okHttpClient        用户自定义okHttpClient
+     * @param okHttpClient 用户自定义okHttpClient
      * @param enableHttpDetailLog 是否开启Http请求的详细日志
      * @return 包装后的okHttpClient
      */
@@ -167,6 +170,29 @@ public class DefaultChatGptClient {
         }
         Single<Model> model = api.model(id);
         return model.blockingGet();
+    }
+
+    /**
+     * 问答接口，每次文档需要将上文带上，需要注意的是，文本的数量不能超限，本接口支持持续对话，具体用法可参考测试用例
+     *
+     * @param completion 问答请求参数
+     * @return 问答结果
+     */
+    public CompletionResponse completions(@NotNull CompletionRequest completion) {
+        Single<CompletionResponse> completions = api.completions(completion);
+        return completions.blockingGet();
+    }
+
+    /**
+     * 简易问答接口，单次提问可使用该接口，具体用法可参考测试用例
+     *
+     * @param completion 具体问题
+     * @return 问答结果
+     */
+    public CompletionResponse completions(@NotNull String completion) {
+        CompletionRequest completionRequest = new CompletionRequest.Builder().prompt(completion).build();
+        Single<CompletionResponse> completions = api.completions(completionRequest);
+        return completions.blockingGet();
     }
 
     /**
@@ -220,7 +246,7 @@ public class DefaultChatGptClient {
         /**
          * http代理，国内无法直接访问，需要代理，和socks代理二选一即可，非必填项
          *
-         * @param ip   代理IP
+         * @param ip 代理IP
          * @param port 代理端口
          * @return Builder
          */
@@ -232,7 +258,7 @@ public class DefaultChatGptClient {
         /**
          * socks代理，国内无法直接访问，需要代理，和http代理二选一即可，非必填项
          *
-         * @param ip   代理IP
+         * @param ip 代理IP
          * @param port 代理端口
          * @return Builder
          */

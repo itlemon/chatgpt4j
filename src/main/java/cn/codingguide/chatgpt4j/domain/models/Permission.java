@@ -25,7 +25,7 @@ public class Permission implements Serializable {
     private boolean allowSampling;
 
     @SerializedName("allow_logprobs")
-    private boolean allowLogprobs;
+    private boolean allowLogProbs;
 
     @SerializedName("allow_search_indices")
     private boolean allowSearchIndices;
@@ -86,12 +86,12 @@ public class Permission implements Serializable {
         this.allowSampling = allowSampling;
     }
 
-    public boolean isAllowLogprobs() {
-        return allowLogprobs;
+    public boolean isAllowLogProbs() {
+        return allowLogProbs;
     }
 
-    public void setAllowLogprobs(boolean allowLogprobs) {
-        this.allowLogprobs = allowLogprobs;
+    public void setAllowLogProbs(boolean allowLogProbs) {
+        this.allowLogProbs = allowLogProbs;
     }
 
     public boolean isAllowSearchIndices() {
@@ -150,7 +150,7 @@ public class Permission implements Serializable {
                 ", created=" + created +
                 ", allowCreateEngine=" + allowCreateEngine +
                 ", allowSampling=" + allowSampling +
-                ", allowLogprobs=" + allowLogprobs +
+                ", allowLogProbs=" + allowLogProbs +
                 ", allowSearchIndices=" + allowSearchIndices +
                 ", allowView=" + allowView +
                 ", allowFineTuning=" + allowFineTuning +
