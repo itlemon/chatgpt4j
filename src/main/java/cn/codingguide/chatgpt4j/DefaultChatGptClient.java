@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionRequest;
+import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionResponse;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionResponse;
 import cn.codingguide.chatgpt4j.domain.models.Model;
@@ -190,9 +192,20 @@ public class DefaultChatGptClient {
      * @return 问答结果
      */
     public CompletionResponse completions(@NotNull String completion) {
-        CompletionRequest completionRequest = new CompletionRequest.Builder().prompt(completion).build();
+        CompletionRequest completionRequest = CompletionRequest.newBuilder().prompt(completion).build();
         Single<CompletionResponse> completions = api.completions(completionRequest);
         return completions.blockingGet();
+    }
+
+    /**
+     * 为给定的聊天对话创建模型响应，默认模型：gpt-3.5-turbo，和官网chat窗口问答一致
+     *
+     * @param chatCompletion 请求参数
+     * @return 返回问答内容
+     */
+    public ChatCompletionResponse chatCompletions(ChatCompletionRequest chatCompletion) {
+        Single<ChatCompletionResponse> chatCompletionResponse = api.chatCompletion(chatCompletion);
+        return chatCompletionResponse.blockingGet();
     }
 
     /**

@@ -1,5 +1,7 @@
 package cn.codingguide.chatgpt4j.api;
 
+import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionRequest;
+import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionResponse;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionResponse;
 import cn.codingguide.chatgpt4j.domain.models.Model;
@@ -46,6 +48,15 @@ public interface OpenAiApi {
      */
     @POST("v1/completions")
     Single<CompletionResponse> completions(@Body CompletionRequest completion);
+
+    /**
+     * 为给定的聊天对话创建模型响应，默认模型：gpt-3.5-turbo，和官网chat窗口问答一致
+     *
+     * @param chatCompletion 请求参数
+     * @return 返回问答内容
+     */
+    @POST("v1/chat/completions")
+    Single<ChatCompletionResponse> chatCompletion(@Body ChatCompletionRequest chatCompletion);
 
 
 }

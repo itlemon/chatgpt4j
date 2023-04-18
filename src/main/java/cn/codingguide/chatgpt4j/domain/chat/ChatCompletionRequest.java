@@ -1,4 +1,4 @@
-package cn.codingguide.chatgpt4j.domain.completions;
+package cn.codingguide.chatgpt4j.domain.chat;
 
 import java.io.Serializable;
 import java.util.List;
@@ -6,16 +6,17 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.collect.Lists;
 import com.google.gson.annotations.SerializedName;
 
-import cn.codingguide.chatgpt4j.constant.CompletionsModel;
+import cn.codingguide.chatgpt4j.constant.ChatCompletionsModel;
 import cn.codingguide.chatgpt4j.constant.ModelSelector;
 
 /**
  * @author itlemon <lemon_jiang@aliyun.com>
- * Created on 2023-04-05
+ * Created on 2023-04-18
  */
-public class CompletionRequest implements Serializable {
+public class ChatCompletionRequest implements Serializable {
 
     /**
      * 该字段不能被序列化为json，这个是保留字段，用于Builder模式
@@ -24,12 +25,7 @@ public class CompletionRequest implements Serializable {
 
     private final String model;
 
-    private final String prompt;
-
-    private final String suffix;
-
-    @SerializedName("max_tokens")
-    private final Integer maxTokens;
+    private final List<Message> messages;
 
     private final Double temperature;
 
@@ -40,12 +36,10 @@ public class CompletionRequest implements Serializable {
 
     private final boolean stream;
 
-    @SerializedName("logprobs")
-    private final Integer logProbs;
-
-    private final boolean echo;
-
     private final List<String> stop;
+
+    @SerializedName("max_tokens")
+    private final Integer maxTokens;
 
     @SerializedName("presence_penalty")
     private final double presencePenalty;
@@ -53,30 +47,23 @@ public class CompletionRequest implements Serializable {
     @SerializedName("frequency_penalty")
     private final double frequencyPenalty;
 
-    @SerializedName("best_of")
-    private final int bestOf;
-
     @SerializedName("logit_bias")
     private final Map<String, Integer> logitBias;
 
     private final String user;
 
-    private CompletionRequest(Builder builder) {
+    private ChatCompletionRequest(Builder builder) {
         this.builder = builder;
         this.model = builder.model.getModel();
-        this.prompt = builder.prompt;
-        this.suffix = builder.suffix;
-        this.maxTokens = builder.maxTokens;
+        this.messages = builder.messages;
         this.temperature = builder.temperature;
         this.topP = builder.topP;
         this.n = builder.countOfCompletion4EachPrompt;
         this.stream = builder.stream;
-        this.logProbs = builder.logProbs;
-        this.echo = builder.echo;
         this.stop = builder.stop;
+        this.maxTokens = builder.maxTokens;
         this.presencePenalty = builder.presencePenalty;
         this.frequencyPenalty = builder.frequencyPenalty;
-        this.bestOf = builder.bestOf;
         this.logitBias = builder.logitBias;
         this.user = builder.user;
     }
@@ -97,16 +84,8 @@ public class CompletionRequest implements Serializable {
         return model;
     }
 
-    public String getPrompt() {
-        return prompt;
-    }
-
-    public String getSuffix() {
-        return suffix;
-    }
-
-    public Integer getMaxTokens() {
-        return maxTokens;
+    public List<Message> getMessages() {
+        return messages;
     }
 
     public Double getTemperature() {
@@ -125,16 +104,12 @@ public class CompletionRequest implements Serializable {
         return stream;
     }
 
-    public Integer getLogProbs() {
-        return logProbs;
-    }
-
-    public boolean isEcho() {
-        return echo;
-    }
-
     public List<String> getStop() {
         return stop;
+    }
+
+    public Integer getMaxTokens() {
+        return maxTokens;
     }
 
     public double getPresencePenalty() {
@@ -143,10 +118,6 @@ public class CompletionRequest implements Serializable {
 
     public double getFrequencyPenalty() {
         return frequencyPenalty;
-    }
-
-    public int getBestOf() {
-        return bestOf;
     }
 
     public Map<String, Integer> getLogitBias() {
@@ -160,27 +131,16 @@ public class CompletionRequest implements Serializable {
     public static final class Builder {
 
         /**
-         * 必需参数：当前稳定的Completions接口适配的模型列表，参考链接：
-         * <a href="https://platform.openai.com/docs/models/model-endpoint-compatibility">链接</a>
+         * 必需参数：选择的模型，当前稳定版本的模型：<a href="https://platform.openai.com/docs/models/gpt-3-5">链接</a>
          */
         @Nonnull
-        private ModelSelector model = CompletionsModel.TEXT_DAVINCI_003;
+        private ModelSelector model = ChatCompletionsModel.GPT_3_5_TURBO;
 
         /**
-         * 必需参数：要生成自动补全建议的文本片段
+         * 详细描述，携带上下文信息
          */
         @Nonnull
-        private String prompt = "Say this is a test";
-
-        /**
-         * 非必需参数：格式化输出的后缀，一般使用\n
-         */
-        private String suffix;
-
-        /**
-         * 非必需参数：生成文本中最多包含的令牌数。默认值为16，最大值为2048，过小的值可能会导致结果不完整。目前最大支持4096
-         */
-        private Integer maxTokens = 2048;
+        private final List<Message> messages = Lists.newArrayList();
 
         /**
          * 非必需参数：生成结果的多样性程度，使用什么采样温度，介于 0 和 2 之间。较高的值（如 0.8）将使输出更加随机，而较低的值（如 0.2）将使输出更加集中和确定。
@@ -196,7 +156,7 @@ public class CompletionRequest implements Serializable {
 
         /**
          * 非必需参数：生成结果的数量。默认为1，最大值为4。为了可读性，该参数名称语义化了一下，原参数名称是n，详情请参考：
-         * <a href="https://platform.openai.com/docs/api-reference/completions/create#completions/create-n">链接</a>
+         * <a href="https://platform.openai.com/docs/api-reference/chat/create#chat/create-n">链接</a>
          */
         private Integer countOfCompletion4EachPrompt = 1;
 
@@ -206,19 +166,15 @@ public class CompletionRequest implements Serializable {
         private boolean stream;
 
         /**
-         * 非必需参数：指示模型是否返回生成每个令牌时的对数概率，以及在完成时返回的标记列表和相应的对数概率。默认为null，表示不返回对数概率。
-         */
-        private Integer logProbs;
-
-        /**
-         * 非必需参数：指示API是否将提示包含在响应中。默认为true，表示将提示包含在响应中。
-         */
-        private boolean echo;
-
-        /**
          * 非必须参数：一组标记，即在生成结果中找到这些标记时停止生成。默认为null，表示不停止生成。
          */
         private List<String> stop;
+
+        /**
+         * 非必需参数：The total length of input tokens and generated tokens is limited by the model's context length.
+         * 生成的文本长度取决于模型，这里默认值为2048，最大支持4096
+         */
+        private Integer maxTokens = 2048;
 
         /**
          * 非必需参数：控制模型是否考虑已经存在的令牌。默认值为0，较高的值会增加罚款并降低已经出现在生成结果中的令牌的权重。
@@ -229,11 +185,6 @@ public class CompletionRequest implements Serializable {
          * 非必须参数：控制模型是否依靠频繁出现的令牌。默认值为0，较高的值会增加罚款并降低诸如常见单词之类的常见令牌的权重。
          */
         private double frequencyPenalty = 0;
-
-        /**
-         * 非必需参数：在多个生成结果之间进行选择的数量。默认为1，表示只返回单个最佳结果。较高的值将导致更多的计算和响应时间。
-         */
-        private int bestOf = 1;
 
         /**
          * 非必需参数：控制模型生成的文本中令牌的偏好。正值会提高相应的令牌权重，负值则会降低相应的权重。默认为null，表示不使用偏差。
@@ -250,18 +201,13 @@ public class CompletionRequest implements Serializable {
             return this;
         }
 
-        public Builder prompt(String prompt) {
-            this.prompt = prompt;
+        public Builder addAllMessages(List<Message> messages) {
+            this.messages.addAll(messages);
             return this;
         }
 
-        public Builder suffix(String suffix) {
-            this.suffix = suffix;
-            return this;
-        }
-
-        public Builder maxTokens(int maxTokens) {
-            this.maxTokens = maxTokens;
+        public Builder addMessage(Message message) {
+            this.messages.add(message);
             return this;
         }
 
@@ -285,18 +231,13 @@ public class CompletionRequest implements Serializable {
             return this;
         }
 
-        public Builder logProbs(int logProbs) {
-            this.logProbs = logProbs;
-            return this;
-        }
-
-        public Builder echo(boolean echo) {
-            this.echo = echo;
-            return this;
-        }
-
         public Builder stop(List<String> stop) {
             this.stop = stop;
+            return this;
+        }
+
+        public Builder maxTokens(int maxTokens) {
+            this.maxTokens = maxTokens;
             return this;
         }
 
@@ -310,11 +251,6 @@ public class CompletionRequest implements Serializable {
             return this;
         }
 
-        public Builder bestOf(int bestOf) {
-            this.bestOf = bestOf;
-            return this;
-        }
-
         public Builder logitBias(Map<String, Integer> logitBias) {
             this.logitBias = logitBias;
             return this;
@@ -325,28 +261,26 @@ public class CompletionRequest implements Serializable {
             return this;
         }
 
-        public CompletionRequest build() {
-            return new CompletionRequest(this);
+        public ChatCompletionRequest build() {
+            return new ChatCompletionRequest(this);
         }
+
     }
 
     @Override
     public String toString() {
-        return "CompletionRequest{" +
-                "model='" + model + '\'' +
-                ", prompt='" + prompt + '\'' +
-                ", suffix='" + suffix + '\'' +
-                ", maxTokens=" + maxTokens +
+        return "ChatCompletionRequest{" +
+                "builder=" + builder +
+                ", model='" + model + '\'' +
+                ", messages=" + messages +
                 ", temperature=" + temperature +
                 ", topP=" + topP +
                 ", n=" + n +
                 ", stream=" + stream +
-                ", logProbs=" + logProbs +
-                ", echo=" + echo +
                 ", stop=" + stop +
+                ", maxTokens=" + maxTokens +
                 ", presencePenalty=" + presencePenalty +
                 ", frequencyPenalty=" + frequencyPenalty +
-                ", bestOf=" + bestOf +
                 ", logitBias=" + logitBias +
                 ", user='" + user + '\'' +
                 '}';

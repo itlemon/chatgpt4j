@@ -6,10 +6,11 @@ import cn.hutool.http.Header;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author itlemon <lemon_jiang@aliyun.com>
@@ -26,14 +27,15 @@ public class AuthorizationInterceptor implements Interceptor {
      */
     private final KeySelectorStrategy<List<String>, String> keySelectorStrategy;
 
-    public AuthorizationInterceptor(List<String> apiKey, KeySelectorStrategy<List<String>, String> keySelectorStrategy) {
+    public AuthorizationInterceptor(List<String> apiKey,
+            KeySelectorStrategy<List<String>, String> keySelectorStrategy) {
         this.apiKey = apiKey;
         this.keySelectorStrategy = keySelectorStrategy;
     }
 
-    @NotNull
+    @Nonnull
     @Override
-    public Response intercept(@NotNull Chain chain) throws IOException {
+    public Response intercept(@Nonnull Chain chain) throws IOException {
         Request original = chain.request();
         Request request = original.newBuilder()
                 // 这里设置认证请求头
