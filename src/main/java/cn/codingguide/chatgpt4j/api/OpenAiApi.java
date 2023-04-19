@@ -1,5 +1,7 @@
 package cn.codingguide.chatgpt4j.api;
 
+import java.util.Map;
+
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionRequest;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionResponse;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
@@ -11,9 +13,14 @@ import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
 import cn.codingguide.chatgpt4j.domain.models.Model;
 import cn.codingguide.chatgpt4j.domain.models.ModelResponse;
 import io.reactivex.Single;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 
 /**
@@ -80,5 +87,34 @@ public interface OpenAiApi {
      */
     @POST("v1/images/generations")
     Single<ImageResponse> imageGenerations(@Body ImageGenerationRequest image);
+
+    /**
+     * 编辑图片
+     *
+     * @param image 图片
+     * @param mask 遮罩层
+     * @param requestBodyMap 描述等参数
+     * @return 编辑后的图片
+     */
+    @Multipart
+    @POST("v1/images/edits")
+    Single<ImageResponse> imageEdits(
+            @Part() MultipartBody.Part image,
+            @Part() MultipartBody.Part mask,
+            @PartMap() Map<String, RequestBody> requestBodyMap);
+
+    /**
+     * 创建给定图像的变体
+     *
+     * @param image 图片
+     * @param requestBodyMap 请求参数
+     * @return ImageResponse
+     */
+    @Multipart
+    @POST("v1/images/variations")
+    Single<ImageResponse> imageVariations(
+            @Part() MultipartBody.Part image,
+            @PartMap() Map<String, RequestBody> requestBodyMap);
+
 
 }

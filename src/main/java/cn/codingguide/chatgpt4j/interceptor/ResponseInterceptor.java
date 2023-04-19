@@ -10,6 +10,7 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -32,7 +33,8 @@ public class ResponseInterceptor implements Interceptor {
         if (!response.isSuccessful()) {
             // 请求失败
             int responseCode = response.code();
-            if (responseCode == ChatGptExceptionMsg.OPEN_AI_AUTHENTICATION_ERROR.code()
+            if (responseCode == ChatGptExceptionMsg.OPEN_AI_INVALID_REQUEST_ERROR.code()
+                    || responseCode == ChatGptExceptionMsg.OPEN_AI_AUTHENTICATION_ERROR.code()
                     || responseCode == ChatGptExceptionMsg.OPEN_AI_NOT_FOUND_ERROR.code()
                     || responseCode == ChatGptExceptionMsg.OPEN_AI_RESOURCE_LIMIT_ERROR.code()
                     || responseCode == ChatGptExceptionMsg.OPENAI_SERVER_ERROR.code()) {

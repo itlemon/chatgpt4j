@@ -2,6 +2,7 @@ package cn.codingguide.chatgpt4j.client;
 
 import cn.codingguide.chatgpt4j.DefaultChatGptClient;
 import cn.codingguide.chatgpt4j.constant.EditModel;
+import cn.codingguide.chatgpt4j.constant.ImageSize;
 import cn.codingguide.chatgpt4j.constant.ResponseFormat;
 import cn.codingguide.chatgpt4j.constant.Role;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionRequest;
@@ -11,8 +12,10 @@ import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionResponse;
 import cn.codingguide.chatgpt4j.domain.edit.EditRequest;
 import cn.codingguide.chatgpt4j.domain.edit.EditResponse;
+import cn.codingguide.chatgpt4j.domain.images.ImageEditRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
+import cn.codingguide.chatgpt4j.domain.images.ImageVariation;
 import cn.codingguide.chatgpt4j.domain.models.Model;
 
 import org.junit.Before;
@@ -154,5 +157,31 @@ public class DefaultChatGptClientTest {
         System.out.println(imageResponse);
     }
 
+    @Test
+    public void simpleImageEdits() {
+        ImageResponse imageResponse = client.imageEdits("/Users/xxxx/Desktop/test.png", "请将图片中的英文去掉");
+        System.out.println(imageResponse);
+    }
+
+    @Test
+    public void imageEdits() {
+        ImageEditRequest imageEditRequest = ImageEditRequest.newBuilder()
+                .image("/Users/xxxx/Desktop/test.png")
+                .prompt("请将图片中的英文去掉")
+                .size(ImageSize.SIZE_256)
+                .user("testUser")
+                .build();
+        System.out.println(client.imageEdits(imageEditRequest));
+    }
+
+    @Test
+    public void imageVariations() {
+        ImageVariation imageVariation = ImageVariation.newBuilder()
+                .image("/Users/xxxx/Desktop/test.png")
+                .size(ImageSize.SIZE_256)
+                .build();
+        System.out.println(client.imageVariations(imageVariation));
+
+    }
 
 }

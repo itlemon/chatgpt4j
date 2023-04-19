@@ -1,8 +1,10 @@
 package cn.codingguide.chatgpt4j;
 
+import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -12,8 +14,10 @@ import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionResponse;
 import cn.codingguide.chatgpt4j.domain.edit.EditRequest;
 import cn.codingguide.chatgpt4j.domain.edit.EditResponse;
+import cn.codingguide.chatgpt4j.domain.images.ImageEditRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
+import cn.codingguide.chatgpt4j.domain.images.ImageVariation;
 import cn.codingguide.chatgpt4j.domain.models.Model;
 import cn.codingguide.chatgpt4j.domain.models.ModelResponse;
 import cn.codingguide.chatgpt4j.exception.ChatGpt4jException;
@@ -21,14 +25,21 @@ import cn.codingguide.chatgpt4j.exception.ChatGptExceptionMsg;
 import cn.codingguide.chatgpt4j.interceptor.AuthorizationInterceptor;
 import cn.codingguide.chatgpt4j.interceptor.ResponseInterceptor;
 import cn.codingguide.chatgpt4j.key.RandomKeySelectorStrategy;
+import cn.codingguide.chatgpt4j.utils.ParamValidator;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import io.reactivex.Single;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 import org.jetbrains.annotations.NotNull;
+
+import com.google.common.collect.Maps;
 
 import cn.codingguide.chatgpt4j.api.OpenAiApi;
 import cn.codingguide.chatgpt4j.key.KeySelectorStrategy;
@@ -242,6 +253,80 @@ public class DefaultChatGptClient {
      */
     public ImageResponse imageGenerations(String image) {
         return imageGenerations(ImageGenerationRequest.newBuilder().prompt(image).build());
+    }
+
+    /**
+     * 根据描述编辑图片
+     *
+     * @param image 图片路径
+     * @param prompt 描述
+     * @return 编辑后的图片
+     */
+    public ImageResponse imageEdits(String image, String prompt) {
+        return imageEdits(ImageEditRequest.newBuilder().image(image).prompt(prompt).build());
+    }
+
+    /**
+     * 编辑图片
+     *
+     * @param image 图片参数
+     * @return 编辑后的图片
+     */
+    public ImageResponse imageEdits(ImageEditRequest image) {
+        // 这里做一些基础参数校验，其他的参数基本依赖OPENAI的校验，因为对于部分空值，在构建请求参数的时候就会出现异常
+        ParamValidator.validateImageEditRequest(image.getImage(), image.getMask());
+        // 构建请求参数
+        MultipartBody.Part imageMultipartBody = buildImageMultipartBodyPart("image", image.getImage());
+
+        MultipartBody.Part maskMultipartBody = null;
+        if (StrUtil.isNotBlank(image.getMask())) {
+            maskMultipartBody = buildImageMultipartBodyPart("mask", image.getMask());
+        }
+
+        Map<String, RequestBody> requestBodyMap = Maps.newHashMapWithExpectedSize(5);
+        requestBodyMap.put("prompt", RequestBody.create(image.getPrompt(), MediaType.parse("multipart/form-data")));
+        buildImageMultipartBodyCommonMap(requestBodyMap, image.getN().toString(), image.getSize(),
+                image.getResponseFormat(), image.getUser());
+
+        Single<ImageResponse> imageResponse = api.imageEdits(imageMultipartBody, maskMultipartBody, requestBodyMap);
+        return imageResponse.blockingGet();
+    }
+
+    /**
+     * 创建给定图像的变体
+     *
+     * @param image 图片参数
+     * @return 重做后的图片
+     */
+    public ImageResponse imageVariations(ImageVariation image) {
+        // 这里做一些基础参数校验，其他的参数基本依赖OPENAI的校验，因为对于部分空值，在构建请求参数的时候就会出现异常
+        ParamValidator.validateImageEditRequest(image.getImage(), null);
+        // 构建请求参数
+        MultipartBody.Part imageMultipartBody = buildImageMultipartBodyPart("image", image.getImage());
+
+        Map<String, RequestBody> requestBodyMap = Maps.newHashMapWithExpectedSize(4);
+        buildImageMultipartBodyCommonMap(requestBodyMap, image.getN().toString(), image.getSize(),
+                image.getResponseFormat(), image.getUser());
+
+        Single<ImageResponse> imageResponse = api.imageVariations(imageMultipartBody, requestBodyMap);
+        return imageResponse.blockingGet();
+    }
+
+    private MultipartBody.Part buildImageMultipartBodyPart(String paramName, String imagePath) {
+        File imageFile = FileUtil.file(imagePath);
+        RequestBody imageBody = RequestBody.create(imageFile, MediaType.parse("multipart/form-data"));
+        return MultipartBody.Part.createFormData(paramName, imageFile.getName(), imageBody);
+    }
+
+    private void buildImageMultipartBodyCommonMap(Map<String, RequestBody> requestBodyMap, String n, String size,
+            String responseFormat, String user) {
+        MediaType mediaType = MediaType.parse("multipart/form-data");
+        requestBodyMap.put("n", RequestBody.create(n, mediaType));
+        requestBodyMap.put("size", RequestBody.create(size, mediaType));
+        requestBodyMap.put("response_format", RequestBody.create(responseFormat, mediaType));
+        if (StrUtil.isNotBlank(user)) {
+            requestBodyMap.put("user", RequestBody.create(user, mediaType));
+        }
     }
 
     /**
