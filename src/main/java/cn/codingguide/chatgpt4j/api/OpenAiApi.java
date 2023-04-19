@@ -4,6 +4,10 @@ import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionRequest;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionResponse;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionResponse;
+import cn.codingguide.chatgpt4j.domain.edit.EditRequest;
+import cn.codingguide.chatgpt4j.domain.edit.EditResponse;
+import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
+import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
 import cn.codingguide.chatgpt4j.domain.models.Model;
 import cn.codingguide.chatgpt4j.domain.models.ModelResponse;
 import io.reactivex.Single;
@@ -58,5 +62,23 @@ public interface OpenAiApi {
     @POST("v1/chat/completions")
     Single<ChatCompletionResponse> chatCompletion(@Body ChatCompletionRequest chatCompletion);
 
+    /**
+     * Creates a new edit for the provided input, instruction, and parameters.
+     * 文本编辑修改
+     *
+     * @param edit 请求参数
+     * @return 编辑返回体
+     */
+    @POST("v1/edits")
+    Single<EditResponse> edits(@Body EditRequest edit);
+
+    /**
+     * 根据描述生成图片
+     *
+     * @param image 请求参数
+     * @return 图片列表
+     */
+    @POST("v1/images/generations")
+    Single<ImageResponse> imageGenerations(@Body ImageGenerationRequest image);
 
 }

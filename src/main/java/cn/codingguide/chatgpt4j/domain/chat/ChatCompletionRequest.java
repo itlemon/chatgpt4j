@@ -76,10 +76,6 @@ public class ChatCompletionRequest implements Serializable {
         return builder;
     }
 
-    public Builder getBuilder() {
-        return builder;
-    }
-
     public String getModel() {
         return model;
     }
@@ -155,7 +151,7 @@ public class ChatCompletionRequest implements Serializable {
         private Double topP = 1D;
 
         /**
-         * 非必需参数：生成结果的数量。默认为1，最大值为4。为了可读性，该参数名称语义化了一下，原参数名称是n，详情请参考：
+         * 非必需参数：生成结果的数量。默认为1。为了可读性，该参数名称语义化了一下，原参数名称是n，详情请参考：
          * <a href="https://platform.openai.com/docs/api-reference/chat/create#chat/create-n">链接</a>
          */
         private Integer countOfCompletion4EachPrompt = 1;
@@ -270,8 +266,7 @@ public class ChatCompletionRequest implements Serializable {
     @Override
     public String toString() {
         return "ChatCompletionRequest{" +
-                "builder=" + builder +
-                ", model='" + model + '\'' +
+                "model='" + model + '\'' +
                 ", messages=" + messages +
                 ", temperature=" + temperature +
                 ", topP=" + topP +

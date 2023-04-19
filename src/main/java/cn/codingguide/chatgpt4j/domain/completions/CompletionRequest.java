@@ -89,10 +89,6 @@ public class CompletionRequest implements Serializable {
         return builder;
     }
 
-    public Builder getBuilder() {
-        return builder;
-    }
-
     public String getModel() {
         return model;
     }

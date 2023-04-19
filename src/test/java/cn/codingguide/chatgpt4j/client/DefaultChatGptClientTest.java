@@ -1,12 +1,18 @@
 package cn.codingguide.chatgpt4j.client;
 
 import cn.codingguide.chatgpt4j.DefaultChatGptClient;
+import cn.codingguide.chatgpt4j.constant.EditModel;
+import cn.codingguide.chatgpt4j.constant.ResponseFormat;
 import cn.codingguide.chatgpt4j.constant.Role;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionRequest;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionResponse;
 import cn.codingguide.chatgpt4j.domain.chat.Message;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionResponse;
+import cn.codingguide.chatgpt4j.domain.edit.EditRequest;
+import cn.codingguide.chatgpt4j.domain.edit.EditResponse;
+import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
+import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
 import cn.codingguide.chatgpt4j.domain.models.Model;
 
 import org.junit.Before;
@@ -95,7 +101,8 @@ public class DefaultChatGptClientTest {
         question = question.toBuilder()
                 .addMessage(Message.newBuilder().role(Role.ASSISTANT)
                         .content(chatCompletion.getChoices()[0].getMessage().getContent()).build())
-                .addMessage(Message.newBuilder().role(Role.USER).content("他到目前为止，出了哪些Java相关的书籍？").build())
+                .addMessage(
+                        Message.newBuilder().role(Role.USER).content("他到目前为止，出了哪些Java相关的书籍？").build())
                 .build();
         chatCompletion = client.chatCompletions(question);
 
@@ -108,5 +115,44 @@ public class DefaultChatGptClientTest {
 
         System.out.println(chatCompletion.getChoices()[0].getMessage().getContent());
     }
+
+    @Test
+    public void editText() {
+        EditRequest request = EditRequest.newBuilder()
+                .input("What day of the wek is it?")
+                .instruction("Fix the spelling mistakes.")
+                .build();
+        EditResponse edit = client.edit(request);
+        System.out.println(edit.getChoices()[0].getText());
+    }
+
+    @Test
+    public void editCode() {
+        EditRequest request = EditRequest.newBuilder()
+                // 修改代码，使用代码通用模型
+                .model(EditModel.CODE_DAVINCI_EDIT_001)
+                .input("sout(\"Hello World!\")")
+                .instruction("帮我修改成正确的Java代码.")
+                .build();
+        EditResponse edit = client.edit(request);
+        System.out.println(edit.getChoices()[0].getText());
+    }
+
+    @Test
+    public void imageGenerations() {
+        ImageGenerationRequest image = ImageGenerationRequest.newBuilder()
+                .prompt("给我画一个熟睡的小婴儿。")
+                .responseFormat(ResponseFormat.B64_JSON)
+                .build();
+        ImageResponse imageResponse = client.imageGenerations(image);
+        System.out.println(imageResponse);
+    }
+
+    @Test
+    public void simpleImageGenerations() {
+        ImageResponse imageResponse = client.imageGenerations("给我画一个熟睡的小婴儿。");
+        System.out.println(imageResponse);
+    }
+
 
 }

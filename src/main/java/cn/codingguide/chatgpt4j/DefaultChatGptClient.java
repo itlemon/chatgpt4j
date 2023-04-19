@@ -10,6 +10,10 @@ import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionRequest;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionResponse;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionResponse;
+import cn.codingguide.chatgpt4j.domain.edit.EditRequest;
+import cn.codingguide.chatgpt4j.domain.edit.EditResponse;
+import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
+import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
 import cn.codingguide.chatgpt4j.domain.models.Model;
 import cn.codingguide.chatgpt4j.domain.models.ModelResponse;
 import cn.codingguide.chatgpt4j.exception.ChatGpt4jException;
@@ -206,6 +210,38 @@ public class DefaultChatGptClient {
     public ChatCompletionResponse chatCompletions(ChatCompletionRequest chatCompletion) {
         Single<ChatCompletionResponse> chatCompletionResponse = api.chatCompletion(chatCompletion);
         return chatCompletionResponse.blockingGet();
+    }
+
+    /**
+     * 文本修改、编辑
+     *
+     * @param edit 请求参数
+     * @return 编辑返回体
+     */
+    public EditResponse edit(EditRequest edit) {
+        Single<EditResponse> edits = api.edits(edit);
+        return edits.blockingGet();
+    }
+
+    /**
+     * 根据描述生成图片，可以定义图片的返回格式，url或者b64_json
+     *
+     * @param image 请求参数
+     * @return 图片列表
+     */
+    public ImageResponse imageGenerations(ImageGenerationRequest image) {
+        Single<ImageResponse> imageGenerations = api.imageGenerations(image);
+        return imageGenerations.blockingGet();
+    }
+
+    /**
+     * 根据描述生成图片，图片默认以URL的形式返回
+     *
+     * @param image 请求参数
+     * @return 图片列表
+     */
+    public ImageResponse imageGenerations(String image) {
+        return imageGenerations(ImageGenerationRequest.newBuilder().prompt(image).build());
     }
 
     /**
