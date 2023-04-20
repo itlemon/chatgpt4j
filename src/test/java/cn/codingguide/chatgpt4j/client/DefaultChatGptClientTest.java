@@ -10,8 +10,8 @@ import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionResponse;
 import cn.codingguide.chatgpt4j.domain.chat.Message;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionResponse;
-import cn.codingguide.chatgpt4j.domain.edit.EditRequest;
-import cn.codingguide.chatgpt4j.domain.edit.EditResponse;
+import cn.codingguide.chatgpt4j.domain.edits.EditRequest;
+import cn.codingguide.chatgpt4j.domain.edits.EditResponse;
 import cn.codingguide.chatgpt4j.domain.images.ImageEditRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
@@ -36,7 +36,7 @@ public class DefaultChatGptClientTest {
     public void setUp() {
         client = DefaultChatGptClient.newBuilder()
                 // 这里替换成自己的key
-                .apiKeys(Arrays.asList("sk-****"))
+                .apiKeys(Arrays.asList("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"))
                 .enableHttpDetailLog(true)
                 .build();
     }
@@ -183,5 +183,12 @@ public class DefaultChatGptClientTest {
         System.out.println(client.imageVariations(imageVariation));
 
     }
+
+    @Test
+    public void simpleEmbeddings() {
+        System.out.println(client.embeddings(Arrays.asList("我是中国人，我爱你中国！", "I love you! China.")));
+    }
+
+
 
 }

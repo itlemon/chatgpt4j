@@ -1,4 +1,4 @@
-package cn.codingguide.chatgpt4j.domain.edit;
+package cn.codingguide.chatgpt4j.domain.edits;
 
 import java.io.Serializable;
 
@@ -82,12 +82,12 @@ public class EditRequest implements Serializable {
         private ModelSelector model = EditModel.TEXT_DAVINCI_EDIT_001;
 
         /**
-         * 非必需模型：需要被编辑的文本
+         * 非必需参数：需要被编辑的文本
          */
         private String input = "";
 
         /**
-         * 必需模型：告诉模型，你希望他对input做什么操作
+         * 必需参数：告诉模型，你希望他对input做什么操作
          */
         @Nonnull
         private String instruction = "";

@@ -6,8 +6,10 @@ import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionRequest;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionResponse;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionResponse;
-import cn.codingguide.chatgpt4j.domain.edit.EditRequest;
-import cn.codingguide.chatgpt4j.domain.edit.EditResponse;
+import cn.codingguide.chatgpt4j.domain.edits.EditRequest;
+import cn.codingguide.chatgpt4j.domain.edits.EditResponse;
+import cn.codingguide.chatgpt4j.domain.embeddings.EmbeddingRequest;
+import cn.codingguide.chatgpt4j.domain.embeddings.EmbeddingResponse;
 import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
 import cn.codingguide.chatgpt4j.domain.models.Model;
@@ -115,6 +117,15 @@ public interface OpenAiApi {
     Single<ImageResponse> imageVariations(
             @Part() MultipartBody.Part image,
             @PartMap() Map<String, RequestBody> requestBodyMap);
+
+    /**
+     * 文本向量计算
+     *
+     * @param embedding 请求参数
+     * @return 计算结果
+     */
+    @POST("v1/embeddings")
+    Single<EmbeddingResponse> embeddings(@Body EmbeddingRequest embedding);
 
 
 }

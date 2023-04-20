@@ -1,4 +1,4 @@
-package cn.codingguide.chatgpt4j.domain.edit;
+package cn.codingguide.chatgpt4j.domain.edits;
 
 import java.io.Serializable;
 import java.util.Arrays;

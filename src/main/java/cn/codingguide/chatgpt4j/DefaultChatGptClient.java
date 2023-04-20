@@ -12,8 +12,10 @@ import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionRequest;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionResponse;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionResponse;
-import cn.codingguide.chatgpt4j.domain.edit.EditRequest;
-import cn.codingguide.chatgpt4j.domain.edit.EditResponse;
+import cn.codingguide.chatgpt4j.domain.edits.EditRequest;
+import cn.codingguide.chatgpt4j.domain.edits.EditResponse;
+import cn.codingguide.chatgpt4j.domain.embeddings.EmbeddingRequest;
+import cn.codingguide.chatgpt4j.domain.embeddings.EmbeddingResponse;
 import cn.codingguide.chatgpt4j.domain.images.ImageEditRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
@@ -290,6 +292,28 @@ public class DefaultChatGptClient {
 
         Single<ImageResponse> imageResponse = api.imageEdits(imageMultipartBody, maskMultipartBody, requestBodyMap);
         return imageResponse.blockingGet();
+    }
+
+    /**
+     * 向量计算：集合文本
+     *
+     * @param input 文本集合
+     * @return 计算结果
+     */
+    public EmbeddingResponse embeddings(List<String> input) {
+        EmbeddingRequest embedding = EmbeddingRequest.newBuilder().input(input).build();
+        return embeddings(embedding);
+    }
+
+    /**
+     * Creates an embedding vector representing the input text.
+     *
+     * @param embedding 文本计算参数
+     * @return 计算结果
+     */
+    public EmbeddingResponse embeddings(EmbeddingRequest embedding) {
+        Single<EmbeddingResponse> embeddings = api.embeddings(embedding);
+        return embeddings.blockingGet();
     }
 
     /**
