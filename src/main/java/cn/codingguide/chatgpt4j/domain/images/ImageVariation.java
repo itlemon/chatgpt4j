@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 import javax.annotation.Nonnull;
 
+import cn.codingguide.chatgpt4j.constant.ImageResponseFormat;
 import com.google.gson.annotations.SerializedName;
 
 import cn.codingguide.chatgpt4j.constant.ImageSize;
-import cn.codingguide.chatgpt4j.constant.ResponseFormat;
 
 /**
  * @author itlemon <lemon_jiang@aliyun.com>
@@ -87,7 +87,7 @@ public class ImageVariation implements Serializable {
         /**
          * 非必需参数，告知openai需要使用何种方式返回图片的内容，有两个选项，url和b64_json，默认是url
          */
-        private ResponseFormat responseFormat = ResponseFormat.URL;
+        private ImageResponseFormat responseFormat = ImageResponseFormat.URL;
 
         /**
          * 非必需参数：指定对话或用户的标识符。如果提供了此参数，则API将尝试利用先前与相同标识符使用的上下文进行生成。否则，它将使用新的上下文。
@@ -109,7 +109,7 @@ public class ImageVariation implements Serializable {
             return this;
         }
 
-        public Builder responseFormat(ResponseFormat responseFormat) {
+        public Builder responseFormat(ImageResponseFormat responseFormat) {
             this.responseFormat = responseFormat;
             return this;
         }

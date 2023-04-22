@@ -4,7 +4,7 @@ package cn.codingguide.chatgpt4j.constant;
  * @author itlemon <lemon_jiang@aliyun.com>
  * Created on 2023-04-19
  */
-public enum ResponseFormat {
+public enum ImageResponseFormat {
 
     /**
      * 格式
@@ -14,7 +14,7 @@ public enum ResponseFormat {
 
     private final String format;
 
-    ResponseFormat(String format) {
+    ImageResponseFormat(String format) {
         this.format = format;
     }
 
