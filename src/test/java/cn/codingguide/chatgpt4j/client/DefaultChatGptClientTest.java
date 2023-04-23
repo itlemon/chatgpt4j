@@ -2,8 +2,8 @@ package cn.codingguide.chatgpt4j.client;
 
 import cn.codingguide.chatgpt4j.DefaultChatGptClient;
 import cn.codingguide.chatgpt4j.constant.EditModel;
+import cn.codingguide.chatgpt4j.constant.ImageResponseFormat;
 import cn.codingguide.chatgpt4j.constant.ImageSize;
-import cn.codingguide.chatgpt4j.constant.ResponseFormat;
 import cn.codingguide.chatgpt4j.constant.Role;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionRequest;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionResponse;
@@ -145,7 +145,7 @@ public class DefaultChatGptClientTest {
     public void imageGenerations() {
         ImageGenerationRequest image = ImageGenerationRequest.newBuilder()
                 .prompt("给我画一个熟睡的小婴儿。")
-                .responseFormat(ResponseFormat.B64_JSON)
+                .responseFormat(ImageResponseFormat.B64_JSON)
                 .build();
         ImageResponse imageResponse = client.imageGenerations(image);
         System.out.println(imageResponse);

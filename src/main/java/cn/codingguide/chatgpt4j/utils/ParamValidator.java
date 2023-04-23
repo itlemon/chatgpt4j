@@ -1,7 +1,6 @@
 package cn.codingguide.chatgpt4j.utils;
 
-import cn.codingguide.chatgpt4j.exception.ChatGpt4jException;
-import cn.codingguide.chatgpt4j.exception.ChatGptExceptionMsg;
+import cn.codingguide.chatgpt4j.exception.ChatGptExceptionCode;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 
@@ -23,14 +22,14 @@ public class ParamValidator {
     public static void validateImageEditRequest(String imagePath, String maskPath) {
         // 检查image参数
         String validateErrorReason;
-        if (StrUtil.isNotBlank(validateErrorReason = validateImage(imagePath))) {
-            throw new ChatGpt4jException(ChatGptExceptionMsg.INVALID_PARAM_ERROR.code(), validateErrorReason);
-        }
+        ChatGpt4jExceptionUtils.isTrue(StrUtil.isNotBlank(validateErrorReason = validateImage(imagePath)))
+                .throwMessage(ChatGptExceptionCode.OPEN_AI_INVALID_REQUEST_ERROR, validateErrorReason);
 
         // 检查mask参数
-        if (StrUtil.isNotBlank(maskPath) && StrUtil.isNotBlank(validateErrorReason = validateImage(maskPath))) {
-            throw new ChatGpt4jException(ChatGptExceptionMsg.INVALID_PARAM_ERROR.code(), validateErrorReason);
-        }
+        ChatGpt4jExceptionUtils.isTrue(
+                        StrUtil.isNotBlank(maskPath) && StrUtil.isNotBlank(validateErrorReason =
+                                validateImage(maskPath)))
+                .throwMessage(ChatGptExceptionCode.OPEN_AI_INVALID_REQUEST_ERROR, validateErrorReason);
     }
 
     /**

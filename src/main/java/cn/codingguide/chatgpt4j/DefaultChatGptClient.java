@@ -22,11 +22,11 @@ import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
 import cn.codingguide.chatgpt4j.domain.images.ImageVariation;
 import cn.codingguide.chatgpt4j.domain.models.Model;
 import cn.codingguide.chatgpt4j.domain.models.ModelResponse;
-import cn.codingguide.chatgpt4j.exception.ChatGpt4jException;
-import cn.codingguide.chatgpt4j.exception.ChatGptExceptionMsg;
+import cn.codingguide.chatgpt4j.exception.ChatGptExceptionCode;
 import cn.codingguide.chatgpt4j.interceptor.AuthorizationInterceptor;
 import cn.codingguide.chatgpt4j.interceptor.ResponseInterceptor;
 import cn.codingguide.chatgpt4j.key.RandomKeySelectorStrategy;
+import cn.codingguide.chatgpt4j.utils.ChatGpt4jExceptionUtils;
 import cn.codingguide.chatgpt4j.utils.ParamValidator;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
@@ -88,9 +88,8 @@ public class DefaultChatGptClient {
 
     private DefaultChatGptClient(Builder builder) {
         // 设置apiKeys
-        if (CollectionUtil.isEmpty(builder.apiKeys)) {
-            throw new ChatGpt4jException(ChatGptExceptionMsg.API_KEY_LIST_NOT_EMPTY);
-        }
+        ChatGpt4jExceptionUtils.isTrue(CollectionUtil.isEmpty(builder.apiKeys))
+                .throwMessage(ChatGptExceptionCode.OPEN_AI_INVALID_REQUEST_ERROR, "Api keys must be not empty.");
         apiKeys = builder.apiKeys;
 
         // 设置api代理host
@@ -184,9 +183,8 @@ public class DefaultChatGptClient {
      * @return 模型详情
      */
     public Model model(@NotNull String id) {
-        if (StrUtil.isBlank(id)) {
-            throw new ChatGpt4jException(ChatGptExceptionMsg.INVALID_PARAM_ERROR);
-        }
+        ChatGpt4jExceptionUtils.isTrue(StrUtil.isBlank(id))
+                .throwMessage(ChatGptExceptionCode.OPEN_AI_INVALID_REQUEST_ERROR, "Model ID is a required parameter.");
         Single<Model> model = api.model(id);
         return model.blockingGet();
     }
