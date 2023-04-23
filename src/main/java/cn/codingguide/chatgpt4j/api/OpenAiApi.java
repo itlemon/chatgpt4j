@@ -2,6 +2,8 @@ package cn.codingguide.chatgpt4j.api;
 
 import java.util.Map;
 
+import cn.codingguide.chatgpt4j.domain.audio.TranscriptionResponse;
+import cn.codingguide.chatgpt4j.domain.audio.TranslationResponse;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionRequest;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionResponse;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
@@ -126,6 +128,30 @@ public interface OpenAiApi {
      */
     @POST("v1/embeddings")
     Single<EmbeddingResponse> embeddings(@Body EmbeddingRequest embedding);
+
+    /**
+     * 语音转文字
+     *
+     * @param audioFile 语音文件
+     * @param requestBodyMap 请求参数
+     * @return 转换结果，文本
+     */
+    @Multipart
+    @POST("v1/audio/transcriptions")
+    Single<TranscriptionResponse> speechToTextTranscriptions(@Part MultipartBody.Part audioFile,
+            @PartMap() Map<String, RequestBody> requestBodyMap);
+
+    /**
+     * 语音翻译：目前仅支持翻译为英文
+     *
+     * @param audioFile 语音文件
+     * @param requestBodyMap 请求参数
+     * @return 翻译后的文本
+     */
+    @Multipart
+    @POST("v1/audio/translations")
+    Single<TranslationResponse> speechToTextTranslations(@Part MultipartBody.Part audioFile,
+            @PartMap() Map<String, RequestBody> requestBodyMap);
 
 
 }

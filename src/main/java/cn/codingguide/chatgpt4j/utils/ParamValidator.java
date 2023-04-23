@@ -1,5 +1,8 @@
 package cn.codingguide.chatgpt4j.utils;
 
+import cn.codingguide.chatgpt4j.constant.TranscriptionModel;
+import cn.codingguide.chatgpt4j.domain.audio.TranscriptionRequest;
+import cn.codingguide.chatgpt4j.domain.audio.TranslationRequest;
 import cn.codingguide.chatgpt4j.exception.ChatGptExceptionCode;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
@@ -11,6 +14,38 @@ import cn.hutool.core.util.StrUtil;
 public class ParamValidator {
 
     private ParamValidator() {
+    }
+
+    /**
+     * 检查文件格式，必须是mp3、mp4、mpeg、mpga、m4a、wav 或 webm
+     *
+     * @param translation 请求参数
+     */
+    public static void validateTranslationRequest(TranslationRequest translation) {
+        validateAudioRequest(translation.getFile(), translation.getModel());
+    }
+
+    /**
+     * 检查文件格式，必须是mp3、mp4、mpeg、mpga、m4a、wav 或 webm
+     *
+     * @param transcription 请求参数
+     */
+    public static void validateTranscriptionRequest(TranscriptionRequest transcription) {
+        validateAudioRequest(transcription.getFile(), transcription.getModel());
+    }
+
+    private static void validateAudioRequest(String audioFile, String model) {
+        // 检查文件
+        ChatGpt4jExceptionUtils.isTrue(StrUtil.isBlank(audioFile))
+                .throwMessage(ChatGptExceptionCode.OPEN_AI_INVALID_REQUEST_ERROR, "Parameter file must be not blank.");
+        ChatGpt4jExceptionUtils.isTrue(
+                StrUtil.equalsAnyIgnoreCase(FileUtil.extName(audioFile), "mp3", "mp4", "mpeg", "mpga", "m4a", "wav",
+                        "webm")).throwMessage(ChatGptExceptionCode.OPEN_AI_INVALID_REQUEST_ERROR,
+                "Parameter file must be end with mp3、mp4、mpeg、mpga、m4a、wav or webm.");
+        // 检查模型
+        ChatGpt4jExceptionUtils.isTrue(TranscriptionModel.WHISPER_1.getModel().equals(model))
+                .throwMessage(ChatGptExceptionCode.OPEN_AI_INVALID_REQUEST_ERROR,
+                        "ID of the model to use. Only whisper-1 is currently available.");
     }
 
     /**

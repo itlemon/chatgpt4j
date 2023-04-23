@@ -3,11 +3,16 @@ package cn.codingguide.chatgpt4j;
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import cn.codingguide.chatgpt4j.domain.audio.TranscriptionRequest;
+import cn.codingguide.chatgpt4j.domain.audio.TranscriptionResponse;
+import cn.codingguide.chatgpt4j.domain.audio.TranslationRequest;
+import cn.codingguide.chatgpt4j.domain.audio.TranslationResponse;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionRequest;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionResponse;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
@@ -293,6 +298,26 @@ public class DefaultChatGptClient {
     }
 
     /**
+     * 创建给定图像的变体
+     *
+     * @param image 图片参数
+     * @return 重做后的图片
+     */
+    public ImageResponse imageVariations(ImageVariation image) {
+        // 这里做一些基础参数校验，其他的参数基本依赖OPENAI的校验，因为对于部分空值，在构建请求参数的时候就会出现异常
+        ParamValidator.validateImageEditRequest(image.getImage(), null);
+        // 构建请求参数
+        MultipartBody.Part imageMultipartBody = buildImageMultipartBodyPart("image", image.getImage());
+
+        Map<String, RequestBody> requestBodyMap = Maps.newHashMapWithExpectedSize(4);
+        buildImageMultipartBodyCommonMap(requestBodyMap, image.getN().toString(), image.getSize(),
+                image.getResponseFormat(), image.getUser());
+
+        Single<ImageResponse> imageResponse = api.imageVariations(imageMultipartBody, requestBodyMap);
+        return imageResponse.blockingGet();
+    }
+
+    /**
      * 向量计算：集合文本
      *
      * @param input 文本集合
@@ -315,23 +340,98 @@ public class DefaultChatGptClient {
     }
 
     /**
-     * 创建给定图像的变体
+     * 语音转文字
      *
-     * @param image 图片参数
-     * @return 重做后的图片
+     * @param audioFile 语音文件，格式必须是： mp3, mp4, mpeg, mpga, m4a, wav, or webm 其中之一
+     * @return 转换结果
      */
-    public ImageResponse imageVariations(ImageVariation image) {
+    public TranscriptionResponse speechToTextTranscriptions(String audioFile) {
+        TranscriptionRequest transcriptionRequest = TranscriptionRequest.newBuilder().file(audioFile).build();
+        return speechToTextTranscriptions(transcriptionRequest);
+    }
+
+    /**
+     * 语音转文字
+     *
+     * @param transcription 自定义参数
+     * @return 转换结果
+     */
+    public TranscriptionResponse speechToTextTranscriptions(TranscriptionRequest transcription) {
         // 这里做一些基础参数校验，其他的参数基本依赖OPENAI的校验，因为对于部分空值，在构建请求参数的时候就会出现异常
-        ParamValidator.validateImageEditRequest(image.getImage(), null);
-        // 构建请求参数
-        MultipartBody.Part imageMultipartBody = buildImageMultipartBodyPart("image", image.getImage());
+        ParamValidator.validateTranscriptionRequest(transcription);
+        // 构建文件
+        MultipartBody.Part multipartBody = buildAudioMultipartBodyPart(transcription.getFile());
 
+        // 构建其他参数
+        Map<String, RequestBody> requestBodyMap = Maps.newHashMapWithExpectedSize(5);
+        buildAudioMultipartBodyCommonMap(requestBodyMap, transcription.getModel(), transcription.getPrompt(),
+                transcription.getResponseFormat(), transcription.getTemperature(), transcription.getLanguage());
+
+        Single<TranscriptionResponse> speechToTextTranscriptions =
+                api.speechToTextTranscriptions(multipartBody, requestBodyMap);
+        return speechToTextTranscriptions.blockingGet();
+    }
+
+    /**
+     * 语音翻译成文字，目前仅仅支持翻译英文
+     *
+     * @param audioFile 语音文件，格式必须是： mp3, mp4, mpeg, mpga, m4a, wav, or webm 其中之一
+     * @return 转换结果
+     */
+    public TranslationResponse speechToTextTranslations(String audioFile) {
+        TranslationRequest translationRequest = TranslationRequest.newBuilder().file(audioFile).build();
+        return speechToTextTranslations(translationRequest);
+    }
+
+    /**
+     * 语音翻译成文字，目前仅仅支持翻译英文
+     *
+     * @param translation 自定义参数
+     * @return 转换结果
+     */
+    public TranslationResponse speechToTextTranslations(TranslationRequest translation) {
+        // 这里做一些基础参数校验，其他的参数基本依赖OPENAI的校验，因为对于部分空值，在构建请求参数的时候就会出现异常
+        ParamValidator.validateTranslationRequest(translation);
+        // 构建文件
+        MultipartBody.Part multipartBody = buildAudioMultipartBodyPart(translation.getFile());
+
+        // 构建其他参数
         Map<String, RequestBody> requestBodyMap = Maps.newHashMapWithExpectedSize(4);
-        buildImageMultipartBodyCommonMap(requestBodyMap, image.getN().toString(), image.getSize(),
-                image.getResponseFormat(), image.getUser());
+        buildAudioMultipartBodyCommonMap(requestBodyMap, translation.getModel(), translation.getPrompt(),
+                translation.getResponseFormat(), translation.getTemperature(), null);
 
-        Single<ImageResponse> imageResponse = api.imageVariations(imageMultipartBody, requestBodyMap);
-        return imageResponse.blockingGet();
+        Single<TranslationResponse> speechToTextTranslations =
+                api.speechToTextTranslations(multipartBody, requestBodyMap);
+        return speechToTextTranslations.blockingGet();
+    }
+
+    private MultipartBody.Part buildAudioMultipartBodyPart(String audioPath) {
+        File audioFile = FileUtil.file(audioPath);
+        String contentType = "multipart/form-data";
+        RequestBody fileBody = RequestBody.create(audioFile, MediaType.parse(contentType));
+        return MultipartBody.Part.createFormData("file", audioFile.getName(), fileBody);
+    }
+
+    private void buildAudioMultipartBodyCommonMap(Map<String, RequestBody> requestBodyMap, String model, String prompt,
+            String responseFormat, Double temperature, String language) {
+        String contentType = "multipart/form-data";
+        // 构建模型
+        requestBodyMap.put("model", RequestBody.create(model, MediaType.parse(contentType)));
+
+        // 其他参数
+        if (StrUtil.isNotBlank(prompt)) {
+            requestBodyMap.put("prompt", RequestBody.create(prompt, MediaType.parse(contentType)));
+        }
+        if (StrUtil.isNotBlank(responseFormat)) {
+            requestBodyMap.put("response_format", RequestBody.create(responseFormat, MediaType.parse(contentType)));
+        }
+        if (Objects.nonNull(temperature)) {
+            requestBodyMap.put("temperature",
+                    RequestBody.create(String.valueOf(temperature), MediaType.parse(contentType)));
+        }
+        if (StrUtil.isNotBlank(language)) {
+            requestBodyMap.put("language", RequestBody.create(language, MediaType.parse(contentType)));
+        }
     }
 
     private MultipartBody.Part buildImageMultipartBodyPart(String paramName, String imagePath) {

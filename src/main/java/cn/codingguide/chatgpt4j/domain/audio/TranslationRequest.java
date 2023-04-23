@@ -10,7 +10,7 @@ import cn.codingguide.chatgpt4j.constant.TranscriptionResponseFormat;
  * @author itlemon <lemon_jiang@aliyun.com>
  * Created on 2023-04-21
  */
-public class TranscriptionRequest {
+public class TranslationRequest {
 
     private final transient Builder builder;
     private final String file;
@@ -18,16 +18,14 @@ public class TranscriptionRequest {
     private final String prompt;
     private final String responseFormat;
     private final Double temperature;
-    private final String language;
 
-    private TranscriptionRequest(Builder builder) {
+    private TranslationRequest(Builder builder) {
         this.builder = builder;
         this.file = builder.file;
         this.model = builder.model.getModel();
         this.prompt = builder.prompt;
         this.responseFormat = builder.responseFormat.name().toLowerCase();
         this.temperature = builder.temperature;
-        this.language = builder.language;
     }
 
     public static Builder newBuilder() {
@@ -56,10 +54,6 @@ public class TranscriptionRequest {
 
     public Double getTemperature() {
         return temperature;
-    }
-
-    public String getLanguage() {
-        return language;
     }
 
     public static final class Builder {
@@ -93,13 +87,6 @@ public class TranscriptionRequest {
          */
         private Double temperature = 0D;
 
-        /**
-         * 非必需参数：输入音频的语言。 以 <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">ISO-639-1</a>
-         * 格式提供输入语言将提高准确性和延迟。
-         * 例如：语言是English，那么它对应的 ISO-639-1 编码是en，如果语言是中文，那么对应的ISO-639-1 编码是zh
-         */
-        private String language;
-
         public Builder file(String file) {
             this.file = file;
             return this;
@@ -125,13 +112,8 @@ public class TranscriptionRequest {
             return this;
         }
 
-        public Builder language(String language) {
-            this.language = language;
-            return this;
-        }
-
-        public TranscriptionRequest build() {
-            return new TranscriptionRequest(this);
+        public TranslationRequest build() {
+            return new TranslationRequest(this);
         }
 
     }
@@ -144,7 +126,6 @@ public class TranscriptionRequest {
                 ", prompt='" + prompt + '\'' +
                 ", responseFormat='" + responseFormat + '\'' +
                 ", temperature=" + temperature +
-                ", language='" + language + '\'' +
                 '}';
     }
 }

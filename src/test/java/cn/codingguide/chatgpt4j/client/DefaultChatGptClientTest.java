@@ -5,6 +5,10 @@ import cn.codingguide.chatgpt4j.constant.EditModel;
 import cn.codingguide.chatgpt4j.constant.ImageResponseFormat;
 import cn.codingguide.chatgpt4j.constant.ImageSize;
 import cn.codingguide.chatgpt4j.constant.Role;
+import cn.codingguide.chatgpt4j.constant.TranscriptionModel;
+import cn.codingguide.chatgpt4j.constant.TranscriptionResponseFormat;
+import cn.codingguide.chatgpt4j.domain.audio.TranscriptionRequest;
+import cn.codingguide.chatgpt4j.domain.audio.TranslationRequest;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionRequest;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionResponse;
 import cn.codingguide.chatgpt4j.domain.chat.Message;
@@ -36,7 +40,7 @@ public class DefaultChatGptClientTest {
     public void setUp() {
         client = DefaultChatGptClient.newBuilder()
                 // 这里替换成自己的key
-                .apiKeys(Arrays.asList("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"))
+                .apiKeys(Arrays.asList("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"))
                 .enableHttpDetailLog(true)
                 .build();
     }
@@ -189,6 +193,39 @@ public class DefaultChatGptClientTest {
         System.out.println(client.embeddings(Arrays.asList("我是中国人，我爱你中国！", "I love you! China.")));
     }
 
+    @Test
+    public void simpleSpeechToTextTranscriptions() {
+        System.out.println(client.speechToTextTranscriptions("/Users/xxxx/Desktop/german.m4a"));
+    }
 
+    @Test
+    public void speechToTextTranscriptions() {
+        TranscriptionRequest build = TranscriptionRequest.newBuilder()
+                .file("/Users/xxxx/Desktop/german.m4a")
+                .model(TranscriptionModel.WHISPER_1)
+                .prompt("将音频内容转换成中文")
+                .language("zh")
+                .temperature(0.2)
+                .responseFormat(TranscriptionResponseFormat.JSON)
+                .build();
+        System.out.println(client.speechToTextTranscriptions(build));
+    }
+
+    @Test
+    public void simpleSpeechToTextTranslations() {
+        System.out.println(client.speechToTextTranslations("/Users/xxxx/Desktop/german.m4a"));
+    }
+
+    @Test
+    public void speechToTextTranslations() {
+        TranslationRequest build = TranslationRequest.newBuilder()
+                .file("/Users/xxxx/Desktop/german.m4a")
+                .model(TranscriptionModel.WHISPER_1)
+                .prompt("Please translate the audio content into English.")
+                .temperature(0.2)
+                .responseFormat(TranscriptionResponseFormat.JSON)
+                .build();
+        System.out.println(client.speechToTextTranslations(build));
+    }
 
 }
