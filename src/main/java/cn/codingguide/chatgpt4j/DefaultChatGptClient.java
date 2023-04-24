@@ -3,7 +3,6 @@ package cn.codingguide.chatgpt4j;
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -21,6 +20,8 @@ import cn.codingguide.chatgpt4j.domain.edits.EditRequest;
 import cn.codingguide.chatgpt4j.domain.edits.EditResponse;
 import cn.codingguide.chatgpt4j.domain.embeddings.EmbeddingRequest;
 import cn.codingguide.chatgpt4j.domain.embeddings.EmbeddingResponse;
+import cn.codingguide.chatgpt4j.domain.files.FileItem;
+import cn.codingguide.chatgpt4j.domain.files.FileResponse;
 import cn.codingguide.chatgpt4j.domain.images.ImageEditRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
@@ -36,12 +37,14 @@ import cn.codingguide.chatgpt4j.utils.ParamValidator;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.ContentType;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import io.reactivex.Single;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 import org.jetbrains.annotations.NotNull;
@@ -289,7 +292,8 @@ public class DefaultChatGptClient {
         }
 
         Map<String, RequestBody> requestBodyMap = Maps.newHashMapWithExpectedSize(5);
-        requestBodyMap.put("prompt", RequestBody.create(image.getPrompt(), MediaType.parse("multipart/form-data")));
+        requestBodyMap.put("prompt",
+                RequestBody.create(image.getPrompt(), MediaType.parse(ContentType.MULTIPART.toString())));
         buildImageMultipartBodyCommonMap(requestBodyMap, image.getN().toString(), image.getSize(),
                 image.getResponseFormat(), image.getUser());
 
@@ -405,44 +409,123 @@ public class DefaultChatGptClient {
         return speechToTextTranslations.blockingGet();
     }
 
+    /**
+     * 获取文件列表
+     *
+     * @return 文件列表
+     */
+    public FileResponse files() {
+        return api.files().blockingGet();
+    }
+
+    /**
+     * 上传文件，上传的文件必须是一个JSONL文件，比如一个test.txt，它的内容，必须是每一行都是一个json对象，json中有两个字段：
+     * 分别是prompt，它是必需项，还有一个是completion，它是可选项。prompt 键指定了模型应该如何开始生成文本，而 completion 键则指定了模型应该生成多少文本。
+     * 例如，文本文件test.txt，它的内容是：
+     * <p>
+     * {"prompt": "Hello, my name is", "completion": ""}<br/>
+     * {"prompt": "What is the meaning of life?", "completion": ""}
+     * </p>
+     *
+     * @param filePath 文件路径
+     * @return 上传结果
+     */
+    public FileItem uploadFile(String filePath) {
+        return uploadFile(filePath, "fine-tune");
+    }
+
+    /**
+     * 上传文件，上传的文件必须是一个JSONL文件，比如一个test.txt，它的内容，必须是每一行都是一个json对象，json中有两个字段：
+     * 分别是prompt，它是必需项，还有一个是completion，它是可选项。prompt 键指定了模型应该如何开始生成文本，而 completion 键则指定了模型应该生成多少文本。
+     * 例如，文本文件test.txt，它的内容是：
+     * <p>
+     * {"prompt": "Hello, my name is", "completion": ""}<br/>
+     * {"prompt": "What is the meaning of life?", "completion": ""}
+     * </p>
+     *
+     * @param filePath 文件路径
+     * @param purpose 文件用途：官网默认值是fine-tune
+     * @return 上传结果
+     */
+    public FileItem uploadFile(String filePath, String purpose) {
+        ParamValidator.validateFile(filePath);
+        // 创建 RequestBody，用于封装构建RequestBody
+        File file = FileUtil.file(filePath);
+        RequestBody fileBody = RequestBody.create(file, MediaType.parse(ContentType.MULTIPART.toString()));
+        MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", file.getName(), fileBody);
+        RequestBody purposeBody = RequestBody.create(purpose, MediaType.parse(ContentType.MULTIPART.toString()));
+        Single<FileItem> uploadFileResponse = api.uploadFile(multipartBody, purposeBody);
+        return uploadFileResponse.blockingGet();
+    }
+
+    /**
+     * 删除文件
+     *
+     * @param fileId 文件ID
+     * @return 删除结果
+     */
+    public FileItem deleteFile(String fileId) {
+        return api.deleteFile(fileId).blockingGet();
+    }
+
+    /**
+     * 检索文件
+     *
+     * @param fileId 文件ID
+     * @return 检索结果
+     */
+    public FileItem retrieveFile(String fileId) {
+        return api.retrieveFile(fileId).blockingGet();
+    }
+
+    /**
+     * 检索文件内容（有钱人专享接口）
+     *
+     * @param fileId 文件ID
+     * @return 检索结果
+     */
+    public ResponseBody retrieveFileContent(String fileId) {
+        return api.retrieveFileContent(fileId).blockingGet();
+    }
+
     private MultipartBody.Part buildAudioMultipartBodyPart(String audioPath) {
         File audioFile = FileUtil.file(audioPath);
-        String contentType = "multipart/form-data";
-        RequestBody fileBody = RequestBody.create(audioFile, MediaType.parse(contentType));
+        RequestBody fileBody = RequestBody.create(audioFile, MediaType.parse(ContentType.MULTIPART.toString()));
         return MultipartBody.Part.createFormData("file", audioFile.getName(), fileBody);
     }
 
     private void buildAudioMultipartBodyCommonMap(Map<String, RequestBody> requestBodyMap, String model, String prompt,
             String responseFormat, Double temperature, String language) {
-        String contentType = "multipart/form-data";
         // 构建模型
-        requestBodyMap.put("model", RequestBody.create(model, MediaType.parse(contentType)));
+        requestBodyMap.put("model", RequestBody.create(model, MediaType.parse(ContentType.MULTIPART.toString())));
 
         // 其他参数
         if (StrUtil.isNotBlank(prompt)) {
-            requestBodyMap.put("prompt", RequestBody.create(prompt, MediaType.parse(contentType)));
+            requestBodyMap.put("prompt", RequestBody.create(prompt, MediaType.parse(ContentType.MULTIPART.toString())));
         }
         if (StrUtil.isNotBlank(responseFormat)) {
-            requestBodyMap.put("response_format", RequestBody.create(responseFormat, MediaType.parse(contentType)));
+            requestBodyMap.put("response_format",
+                    RequestBody.create(responseFormat, MediaType.parse(ContentType.MULTIPART.toString())));
         }
         if (Objects.nonNull(temperature)) {
             requestBodyMap.put("temperature",
-                    RequestBody.create(String.valueOf(temperature), MediaType.parse(contentType)));
+                    RequestBody.create(String.valueOf(temperature), MediaType.parse(ContentType.MULTIPART.toString())));
         }
         if (StrUtil.isNotBlank(language)) {
-            requestBodyMap.put("language", RequestBody.create(language, MediaType.parse(contentType)));
+            requestBodyMap.put("language",
+                    RequestBody.create(language, MediaType.parse(ContentType.MULTIPART.toString())));
         }
     }
 
     private MultipartBody.Part buildImageMultipartBodyPart(String paramName, String imagePath) {
         File imageFile = FileUtil.file(imagePath);
-        RequestBody imageBody = RequestBody.create(imageFile, MediaType.parse("multipart/form-data"));
+        RequestBody imageBody = RequestBody.create(imageFile, MediaType.parse(ContentType.MULTIPART.toString()));
         return MultipartBody.Part.createFormData(paramName, imageFile.getName(), imageBody);
     }
 
     private void buildImageMultipartBodyCommonMap(Map<String, RequestBody> requestBodyMap, String n, String size,
             String responseFormat, String user) {
-        MediaType mediaType = MediaType.parse("multipart/form-data");
+        MediaType mediaType = MediaType.parse(ContentType.MULTIPART.toString());
         requestBodyMap.put("n", RequestBody.create(n, mediaType));
         requestBodyMap.put("size", RequestBody.create(size, mediaType));
         requestBodyMap.put("response_format", RequestBody.create(responseFormat, mediaType));

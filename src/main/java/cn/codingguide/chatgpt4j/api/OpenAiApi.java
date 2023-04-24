@@ -12,6 +12,8 @@ import cn.codingguide.chatgpt4j.domain.edits.EditRequest;
 import cn.codingguide.chatgpt4j.domain.edits.EditResponse;
 import cn.codingguide.chatgpt4j.domain.embeddings.EmbeddingRequest;
 import cn.codingguide.chatgpt4j.domain.embeddings.EmbeddingResponse;
+import cn.codingguide.chatgpt4j.domain.files.FileItem;
+import cn.codingguide.chatgpt4j.domain.files.FileResponse;
 import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
 import cn.codingguide.chatgpt4j.domain.models.Model;
@@ -19,13 +21,16 @@ import cn.codingguide.chatgpt4j.domain.models.ModelResponse;
 import io.reactivex.Single;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
 import retrofit2.http.Path;
+import retrofit2.http.Streaming;
 
 /**
  * @author itlemon <lemon_jiang@aliyun.com>
@@ -153,5 +158,51 @@ public interface OpenAiApi {
     Single<TranslationResponse> speechToTextTranslations(@Part MultipartBody.Part audioFile,
             @PartMap() Map<String, RequestBody> requestBodyMap);
 
+    /**
+     * 获取文件列表
+     *
+     * @return 文件列表
+     */
+    @GET("v1/files")
+    Single<FileResponse> files();
+
+    /**
+     * 上传文件
+     *
+     * @param purpose 目的
+     * @param file 文件
+     * @return 上传结果
+     */
+    @Multipart
+    @POST("v1/files")
+    Single<FileItem> uploadFile(@Part MultipartBody.Part file, @Part("purpose") RequestBody purpose);
+
+    /**
+     * 删除文件
+     *
+     * @param fileId 文件ID
+     * @return 删除结果
+     */
+    @DELETE("v1/files/{file_id}")
+    Single<FileItem> deleteFile(@Path("file_id") String fileId);
+
+    /**
+     * 检索文件
+     *
+     * @param fileId 文件ID
+     * @return 文件
+     */
+    @GET("v1/files/{file_id}")
+    Single<FileItem> retrieveFile(@Path("file_id") String fileId);
+
+    /**
+     * 检索文件内容，付费plus用户专享接口
+     *
+     * @param fileId 文件ID
+     * @return ResponseBody
+     */
+    @Streaming
+    @GET("v1/files/{file_id}/content")
+    Single<ResponseBody> retrieveFileContent(@Path("file_id") String fileId);
 
 }

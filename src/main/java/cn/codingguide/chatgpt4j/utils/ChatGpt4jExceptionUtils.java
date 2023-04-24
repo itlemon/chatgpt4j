@@ -19,7 +19,7 @@ public class ChatGpt4jExceptionUtils {
     public static ThrowExceptionFunction isTrue(boolean expression) {
         return (code, message) -> {
             if (expression) {
-                log.error("ChatGpt4jExceptionUtils found exception, code: {}, message: {}.", code, message);
+                log.error("ChatGpt4jExceptionUtils found exception, code: {}-{}, message: {}.", code, code.code(), message);
                 throw new ChatGpt4jException(code, message);
             }
         };

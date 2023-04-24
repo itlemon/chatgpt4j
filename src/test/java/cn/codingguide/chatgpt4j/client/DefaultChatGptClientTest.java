@@ -40,7 +40,7 @@ public class DefaultChatGptClientTest {
     public void setUp() {
         client = DefaultChatGptClient.newBuilder()
                 // 这里替换成自己的key
-                .apiKeys(Arrays.asList("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"))
+                .apiKeys(Arrays.asList("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"))
                 .enableHttpDetailLog(true)
                 .build();
     }
@@ -227,5 +227,40 @@ public class DefaultChatGptClientTest {
                 .build();
         System.out.println(client.speechToTextTranslations(build));
     }
+
+    @Test
+    public void files() {
+        System.out.println(client.files());
+    }
+
+    @Test
+    public void uploadFile() {
+        String filePath = "/Users/xxxx/Desktop/test.txt";
+        System.out.println(client.uploadFile(filePath));
+    }
+
+    @Test
+    public void uploadFileWithPurpose() {
+        String filePath = "/Users/xxxx/Desktop/test.txt";
+        System.out.println(client.uploadFile(filePath, "fine-tune"));
+    }
+
+    @Test
+    public void deleteFile() {
+        System.out.println(client.deleteFile("file-y8EycSoRW3VZUOVXRMqJYQAP"));
+    }
+
+    @Test
+    public void retrieveFile() {
+        System.out.println(client.retrieveFile("file-75dy5RmHbcM7aO4zjZLEv4FC"));
+    }
+
+    @Test
+    public void retrieveFileContent() {
+        // 该接口非plus无法调用，会返回：To help mitigate abuse, downloading of fine-tune training files is disabled for free accounts.
+        System.out.println(client.retrieveFileContent("file-75dy5RmHbcM7aO4zjZLEv4FC"));
+    }
+
+
 
 }

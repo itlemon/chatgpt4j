@@ -17,6 +17,17 @@ public class ParamValidator {
     }
 
     /**
+     * 检查文件
+     *
+     * @param filePath 文件路径
+     */
+    public static void validateFile(String filePath) {
+        ChatGpt4jExceptionUtils.isTrue(!FileUtil.isFile(filePath))
+                .throwMessage(ChatGptExceptionCode.OPEN_AI_INVALID_REQUEST_ERROR,
+                        "Parameter file: " + filePath + " is not found.");
+    }
+
+    /**
      * 检查文件格式，必须是mp3、mp4、mpeg、mpga、m4a、wav 或 webm
      *
      * @param translation 请求参数
