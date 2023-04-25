@@ -1,6 +1,6 @@
 package cn.codingguide.chatgpt4j.domain.audio;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import cn.codingguide.chatgpt4j.constant.ModelSelector;
 import cn.codingguide.chatgpt4j.constant.TranscriptionModel;
@@ -67,13 +67,13 @@ public class TranscriptionRequest {
         /**
          * 必需参数：要转录的音频文件，采用以下格式之一：mp3、mp4、mpeg、mpga、m4a、wav 或 webm
          */
-        @Nonnull
+        @NotNull
         private String file;
 
         /**
          * 必需参数：ID of the model to use. Only whisper-1 is currently available.
          */
-        @Nonnull
+        @NotNull
         private ModelSelector model = TranscriptionModel.WHISPER_1;
 
         /**

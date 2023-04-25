@@ -2,7 +2,7 @@ package cn.codingguide.chatgpt4j.domain.images;
 
 import java.io.Serializable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import cn.codingguide.chatgpt4j.constant.ImageResponseFormat;
 import com.google.gson.annotations.SerializedName;
@@ -70,7 +70,7 @@ public class ImageVariation implements Serializable {
         /**
          * 必需参数：要编辑的图像。 必须是有效的 PNG 文件，小于 4MB，并且是方形的。 如果未提供遮罩，图像必须具有透明度，将用作遮罩。
          */
-        @Nonnull
+        @NotNull
         private String image;
 
         /**

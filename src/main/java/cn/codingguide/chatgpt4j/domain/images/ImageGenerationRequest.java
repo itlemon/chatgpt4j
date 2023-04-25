@@ -2,7 +2,7 @@ package cn.codingguide.chatgpt4j.domain.images;
 
 import java.io.Serializable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import cn.codingguide.chatgpt4j.constant.ImageResponseFormat;
 import com.google.gson.annotations.SerializedName;
@@ -70,7 +70,7 @@ public class ImageGenerationRequest implements Serializable {
         /**
          * 提示给OPENAI的描述，比如：给我画一个熟睡的小婴儿。
          */
-        @Nonnull
+        @NotNull
         private String prompt;
 
         /**

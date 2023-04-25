@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -159,13 +159,13 @@ public class CompletionRequest implements Serializable {
          * 必需参数：当前稳定的Completions接口适配的模型列表，参考链接：
          * <a href="https://platform.openai.com/docs/models/model-endpoint-compatibility">链接</a>
          */
-        @Nonnull
+        @NotNull
         private ModelSelector model = CompletionsModel.TEXT_DAVINCI_003;
 
         /**
          * 必需参数：要生成自动补全建议的文本片段
          */
-        @Nonnull
+        @NotNull
         private String prompt = "Say this is a test";
 
         /**

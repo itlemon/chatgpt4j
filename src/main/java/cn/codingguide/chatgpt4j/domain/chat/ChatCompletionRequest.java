@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.SerializedName;
@@ -129,13 +129,13 @@ public class ChatCompletionRequest implements Serializable {
         /**
          * 必需参数：选择的模型，当前稳定版本的模型：<a href="https://platform.openai.com/docs/models/gpt-3-5">链接</a>
          */
-        @Nonnull
+        @NotNull
         private ModelSelector model = ChatCompletionsModel.GPT_3_5_TURBO;
 
         /**
          * 详细描述，携带上下文信息
          */
-        @Nonnull
+        @NotNull
         private final List<Message> messages = Lists.newArrayList();
 
         /**

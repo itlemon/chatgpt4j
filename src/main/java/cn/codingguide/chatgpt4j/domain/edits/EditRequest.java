@@ -2,7 +2,7 @@ package cn.codingguide.chatgpt4j.domain.edits;
 
 import java.io.Serializable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -78,7 +78,7 @@ public class EditRequest implements Serializable {
          * 必需参数：ID of the model to use. You can use the text-davinci-edit-001 or code-davinci-edit-001 model with
          * this endpoint.
          */
-        @Nonnull
+        @NotNull
         private ModelSelector model = EditModel.TEXT_DAVINCI_EDIT_001;
 
         /**
@@ -89,7 +89,7 @@ public class EditRequest implements Serializable {
         /**
          * 必需参数：告诉模型，你希望他对input做什么操作
          */
-        @Nonnull
+        @NotNull
         private String instruction = "";
 
         /**

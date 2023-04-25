@@ -3,7 +3,7 @@ package cn.codingguide.chatgpt4j.domain.embeddings;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import cn.codingguide.chatgpt4j.constant.EmbeddingsModel;
 import cn.codingguide.chatgpt4j.constant.ModelSelector;
@@ -54,7 +54,7 @@ public class EmbeddingRequest implements Serializable {
         /**
          * 必需参数：选择的模型，当前稳定版本的模型：<a href="https://platform.openai.com/docs/models/model-endpoint-compatibility">链接</a>
          */
-        @Nonnull
+        @NotNull
         private ModelSelector model = EmbeddingsModel.TEXT_EMBEDDING_ADA_002;
 
         /**
@@ -62,7 +62,7 @@ public class EmbeddingRequest implements Serializable {
          * inputs in a single request, pass an array of strings or array of token arrays. Each input must not exceed
          * 8192 tokens in length.
          */
-        @Nonnull
+        @NotNull
         private List<String> input;
 
         /**
