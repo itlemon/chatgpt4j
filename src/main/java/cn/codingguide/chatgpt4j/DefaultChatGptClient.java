@@ -3,9 +3,7 @@ package cn.codingguide.chatgpt4j;
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import cn.codingguide.chatgpt4j.domain.audio.TranscriptionRequest;
@@ -22,12 +20,15 @@ import cn.codingguide.chatgpt4j.domain.embeddings.EmbeddingRequest;
 import cn.codingguide.chatgpt4j.domain.embeddings.EmbeddingResponse;
 import cn.codingguide.chatgpt4j.domain.files.FileItem;
 import cn.codingguide.chatgpt4j.domain.files.FileResponse;
+import cn.codingguide.chatgpt4j.domain.finetune.*;
 import cn.codingguide.chatgpt4j.domain.images.ImageEditRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
 import cn.codingguide.chatgpt4j.domain.images.ImageVariation;
 import cn.codingguide.chatgpt4j.domain.models.Model;
 import cn.codingguide.chatgpt4j.domain.models.ModelResponse;
+import cn.codingguide.chatgpt4j.domain.moderations.ModerationRequest;
+import cn.codingguide.chatgpt4j.domain.moderations.ModerationResponse;
 import cn.codingguide.chatgpt4j.exception.ChatGptExceptionCode;
 import cn.codingguide.chatgpt4j.interceptor.AuthorizationInterceptor;
 import cn.codingguide.chatgpt4j.interceptor.ResponseInterceptor;
@@ -107,7 +108,7 @@ public class DefaultChatGptClient {
         // 设置API KEY选择策略
         KeySelectorStrategy<List<String>, String> apiSelectorStrategyTemp;
         keySelectorStrategy = Objects.isNull(apiSelectorStrategyTemp = builder.keySelectorStrategy) ?
-                              new RandomKeySelectorStrategy() : apiSelectorStrategyTemp;
+                new RandomKeySelectorStrategy() : apiSelectorStrategyTemp;
 
         // 设置okHttpClient
         okHttpClient = warpOkHttpClient(Objects.isNull(builder.okHttpClient) ? okHttpClient() : builder.okHttpClient,
@@ -153,7 +154,7 @@ public class DefaultChatGptClient {
     /**
      * 将用户自定义的okHttpClient包装一下，主要是设置了请求头
      *
-     * @param okHttpClient 用户自定义okHttpClient
+     * @param okHttpClient        用户自定义okHttpClient
      * @param enableHttpDetailLog 是否开启Http请求的详细日志
      * @return 包装后的okHttpClient
      */
@@ -266,7 +267,7 @@ public class DefaultChatGptClient {
     /**
      * 根据描述编辑图片
      *
-     * @param image 图片路径
+     * @param image  图片路径
      * @param prompt 描述
      * @return 编辑后的图片
      */
@@ -324,11 +325,22 @@ public class DefaultChatGptClient {
     /**
      * 向量计算：集合文本
      *
+     * @param input 文本
+     * @return 计算结果
+     */
+    public EmbeddingResponse embeddings(String input) {
+        EmbeddingRequest embedding = EmbeddingRequest.newBuilder().addInput(input).build();
+        return embeddings(embedding);
+    }
+
+    /**
+     * 向量计算：集合文本
+     *
      * @param input 文本集合
      * @return 计算结果
      */
     public EmbeddingResponse embeddings(List<String> input) {
-        EmbeddingRequest embedding = EmbeddingRequest.newBuilder().input(input).build();
+        EmbeddingRequest embedding = EmbeddingRequest.newBuilder().addAllInput(input).build();
         return embeddings(embedding);
     }
 
@@ -444,7 +456,7 @@ public class DefaultChatGptClient {
      * </p>
      *
      * @param filePath 文件路径
-     * @param purpose 文件用途：官网默认值是fine-tune
+     * @param purpose  文件用途：官网默认值是fine-tune
      * @return 上传结果
      */
     public FileItem uploadFile(String filePath, String purpose) {
@@ -488,6 +500,114 @@ public class DefaultChatGptClient {
         return api.retrieveFileContent(fileId).blockingGet();
     }
 
+    /**
+     * 创建微调模型
+     *
+     * @param trainingFileId 训练文件ID
+     * @return 微调结果
+     */
+    public FineTuneResponse fineTune(String trainingFileId) {
+        Single<FineTuneResponse> fineTuneResponse =
+                api.fineTune(FineTuneRequest.newBuilder().trainingFile(trainingFileId).build());
+        return fineTuneResponse.blockingGet();
+    }
+
+    /**
+     * 根据已有模型进行微调创建新模型
+     *
+     * @param fineTune 创建参数
+     * @return 创建结果
+     */
+    public FineTuneResponse fineTune(FineTuneRequest fineTune) {
+        Single<FineTuneResponse> fineTuneResponse = api.fineTune(fineTune);
+        return fineTuneResponse.blockingGet();
+    }
+
+    /**
+     * 获取微调作业列表
+     *
+     * @return 微调作业列表
+     */
+    public FineTuneListResponse fineTunes() {
+        Single<FineTuneListResponse> fineTunes = api.fineTunes();
+        return fineTunes.blockingGet();
+    }
+
+    /**
+     * 检索微调作业
+     *
+     * @param fineTuneId 微调作业ID
+     * @return 作业详情
+     */
+    public FineTuneResponse retrieveFineTune(String fineTuneId) {
+        Single<FineTuneResponse> fineTune = api.retrieveFineTune(fineTuneId);
+        return fineTune.blockingGet();
+    }
+
+    /**
+     * 取消微调作业
+     *
+     * @param fineTuneId 微调作业ID
+     * @return 取消结果
+     */
+    public FineTuneResponse cancelFineTune(String fineTuneId) {
+        Single<FineTuneResponse> fineTune = api.cancelFineTune(fineTuneId);
+        return fineTune.blockingGet();
+    }
+
+    /**
+     * 微调作业事件列表
+     *
+     * @param fineTuneId 微调作业ID
+     * @return 事件列表
+     */
+    public FineTuneEventListResponse fineTuneEvents(String fineTuneId) {
+        Single<FineTuneEventListResponse> events = api.fineTuneEvents(fineTuneId);
+        return events.blockingGet();
+    }
+
+    /**
+     * 删除微调作业模型，只能删除自己的组织内的作业模型
+     *
+     * @param model 模型ID
+     * @return 删除结果
+     */
+    public FineTuneDeleteResponse deleteFineTuneModel(String model) {
+        Single<FineTuneDeleteResponse> delete = api.deleteFineTuneModel(model);
+        return delete.blockingGet();
+    }
+
+    /**
+     * 文本审核与分类，主要用于检测文本是否歧视、自残等内容
+     *
+     * @param text 待检测文本
+     * @return 审核分类结果
+     */
+    public ModerationResponse moderations(String text) {
+        return moderations(ModerationRequest.newBuilder().addInput(text).build());
+    }
+
+    /**
+     * 文本审核与分类，主要用于检测文本是否歧视、自残等内容
+     *
+     * @param text 待检测文本
+     * @return 审核分类结果
+     */
+    public ModerationResponse moderations(List<String> text) {
+        return moderations(ModerationRequest.newBuilder().addAllInput(text).build());
+    }
+
+    /**
+     * 文本审核与分类，主要用于检测文本是否歧视、自残等内容
+     *
+     * @param moderation 请求参数
+     * @return 审核分类结果
+     */
+    public ModerationResponse moderations(ModerationRequest moderation) {
+        Single<ModerationResponse> moderations = api.moderations(moderation);
+        return moderations.blockingGet();
+    }
+
     private MultipartBody.Part buildAudioMultipartBodyPart(String audioPath) {
         File audioFile = FileUtil.file(audioPath);
         RequestBody fileBody = RequestBody.create(audioFile, MediaType.parse(ContentType.MULTIPART.toString()));
@@ -495,7 +615,7 @@ public class DefaultChatGptClient {
     }
 
     private void buildAudioMultipartBodyCommonMap(Map<String, RequestBody> requestBodyMap, String model, String prompt,
-            String responseFormat, Double temperature, String language) {
+                                                  String responseFormat, Double temperature, String language) {
         // 构建模型
         requestBodyMap.put("model", RequestBody.create(model, MediaType.parse(ContentType.MULTIPART.toString())));
 
@@ -524,7 +644,7 @@ public class DefaultChatGptClient {
     }
 
     private void buildImageMultipartBodyCommonMap(Map<String, RequestBody> requestBodyMap, String n, String size,
-            String responseFormat, String user) {
+                                                  String responseFormat, String user) {
         MediaType mediaType = MediaType.parse(ContentType.MULTIPART.toString());
         requestBodyMap.put("n", RequestBody.create(n, mediaType));
         requestBodyMap.put("size", RequestBody.create(size, mediaType));
@@ -585,7 +705,7 @@ public class DefaultChatGptClient {
         /**
          * http代理，国内无法直接访问，需要代理，和socks代理二选一即可，非必填项
          *
-         * @param ip 代理IP
+         * @param ip   代理IP
          * @param port 代理端口
          * @return Builder
          */
@@ -597,7 +717,7 @@ public class DefaultChatGptClient {
         /**
          * socks代理，国内无法直接访问，需要代理，和http代理二选一即可，非必填项
          *
-         * @param ip 代理IP
+         * @param ip   代理IP
          * @param port 代理端口
          * @return Builder
          */

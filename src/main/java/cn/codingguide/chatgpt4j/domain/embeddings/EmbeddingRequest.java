@@ -3,6 +3,7 @@ package cn.codingguide.chatgpt4j.domain.embeddings;
 import java.io.Serializable;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 
 import cn.codingguide.chatgpt4j.constant.EmbeddingsModel;
@@ -63,7 +64,7 @@ public class EmbeddingRequest implements Serializable {
          * 8192 tokens in length.
          */
         @NotNull
-        private List<String> input;
+        private final List<String> input = Lists.newArrayList();
 
         /**
          * 非必需参数：指定对话或用户的标识符。如果提供了此参数，则API将尝试利用先前与相同标识符使用的上下文进行生成。否则，它将使用新的上下文。
@@ -75,8 +76,13 @@ public class EmbeddingRequest implements Serializable {
             return this;
         }
 
-        public Builder input(List<String> input) {
-            this.input = input;
+        public Builder addInput(String input) {
+            this.input.add(input);
+            return this;
+        }
+
+        public Builder addAllInput(List<String> input) {
+            this.input.addAll(input);
             return this;
         }
 

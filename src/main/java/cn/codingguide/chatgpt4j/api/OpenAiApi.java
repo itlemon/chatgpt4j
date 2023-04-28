@@ -14,10 +14,13 @@ import cn.codingguide.chatgpt4j.domain.embeddings.EmbeddingRequest;
 import cn.codingguide.chatgpt4j.domain.embeddings.EmbeddingResponse;
 import cn.codingguide.chatgpt4j.domain.files.FileItem;
 import cn.codingguide.chatgpt4j.domain.files.FileResponse;
+import cn.codingguide.chatgpt4j.domain.finetune.*;
 import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
 import cn.codingguide.chatgpt4j.domain.models.Model;
 import cn.codingguide.chatgpt4j.domain.models.ModelResponse;
+import cn.codingguide.chatgpt4j.domain.moderations.ModerationRequest;
+import cn.codingguide.chatgpt4j.domain.moderations.ModerationResponse;
 import io.reactivex.Single;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -100,8 +103,8 @@ public interface OpenAiApi {
     /**
      * 编辑图片
      *
-     * @param image 图片
-     * @param mask 遮罩层
+     * @param image          图片
+     * @param mask           遮罩层
      * @param requestBodyMap 描述等参数
      * @return 编辑后的图片
      */
@@ -115,7 +118,7 @@ public interface OpenAiApi {
     /**
      * 创建给定图像的变体
      *
-     * @param image 图片
+     * @param image          图片
      * @param requestBodyMap 请求参数
      * @return ImageResponse
      */
@@ -137,26 +140,26 @@ public interface OpenAiApi {
     /**
      * 语音转文字
      *
-     * @param audioFile 语音文件
+     * @param audioFile      语音文件
      * @param requestBodyMap 请求参数
      * @return 转换结果，文本
      */
     @Multipart
     @POST("v1/audio/transcriptions")
     Single<TranscriptionResponse> speechToTextTranscriptions(@Part MultipartBody.Part audioFile,
-            @PartMap() Map<String, RequestBody> requestBodyMap);
+                                                             @PartMap() Map<String, RequestBody> requestBodyMap);
 
     /**
      * 语音翻译：目前仅支持翻译为英文
      *
-     * @param audioFile 语音文件
+     * @param audioFile      语音文件
      * @param requestBodyMap 请求参数
      * @return 翻译后的文本
      */
     @Multipart
     @POST("v1/audio/translations")
     Single<TranslationResponse> speechToTextTranslations(@Part MultipartBody.Part audioFile,
-            @PartMap() Map<String, RequestBody> requestBodyMap);
+                                                         @PartMap() Map<String, RequestBody> requestBodyMap);
 
     /**
      * 获取文件列表
@@ -170,7 +173,7 @@ public interface OpenAiApi {
      * 上传文件
      *
      * @param purpose 目的
-     * @param file 文件
+     * @param file    文件
      * @return 上传结果
      */
     @Multipart
@@ -204,5 +207,68 @@ public interface OpenAiApi {
     @Streaming
     @GET("v1/files/{file_id}/content")
     Single<ResponseBody> retrieveFileContent(@Path("file_id") String fileId);
+
+    /**
+     * 根据已有模型进行微调创建新模型
+     *
+     * @param fineTune 微调作业参数
+     * @return 创建结果
+     */
+    @POST("v1/fine-tunes")
+    Single<FineTuneResponse> fineTune(@Body FineTuneRequest fineTune);
+
+    /**
+     * 获取微调作业列表
+     *
+     * @return 微调作业列表
+     */
+    @GET("v1/fine-tunes")
+    Single<FineTuneListResponse> fineTunes();
+
+    /**
+     * 检索微调作业
+     *
+     * @param fineTuneId 微调作业ID
+     * @return 作业详情
+     */
+    @GET("v1/fine-tunes/{fine_tune_id}")
+    Single<FineTuneResponse> retrieveFineTune(@Path("fine_tune_id") String fineTuneId);
+
+    /**
+     * 取消微调作业
+     *
+     * @param fineTuneId 微调作业ID
+     * @return 作业详情
+     */
+    @POST("v1/fine-tunes/{fine_tune_id}/cancel")
+    Single<FineTuneResponse> cancelFineTune(@Path("fine_tune_id") String fineTuneId);
+
+    /**
+     * 微调作业事件列表
+     *
+     * @param fineTuneId 微调作业ID
+     * @return 微调作业事件列表
+     */
+    @GET("v1/fine-tunes/{fine_tune_id}/events")
+    Single<FineTuneEventListResponse> fineTuneEvents(@Path("fine_tune_id") String fineTuneId);
+
+    /**
+     * 删除微调作业模型，只能删除自己的组织内的作业模型
+     *
+     * @param model 模型ID
+     * @return 删除结果
+     */
+    @DELETE("v1/models/{model}")
+    Single<FineTuneDeleteResponse> deleteFineTuneModel(@Path("model") String model);
+
+    /**
+     * 文本审核与分类，主要用于检测文本是否歧视、自残等内容
+     *
+     * @param moderation 文本审核参数
+     * @return 审核分类结果
+     */
+    @POST("v1/moderations")
+    Single<ModerationResponse> moderations(@Body ModerationRequest moderation);
+
 
 }

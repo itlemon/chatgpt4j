@@ -1,12 +1,7 @@
 package cn.codingguide.chatgpt4j.client;
 
 import cn.codingguide.chatgpt4j.DefaultChatGptClient;
-import cn.codingguide.chatgpt4j.constant.EditModel;
-import cn.codingguide.chatgpt4j.constant.ImageResponseFormat;
-import cn.codingguide.chatgpt4j.constant.ImageSize;
-import cn.codingguide.chatgpt4j.constant.Role;
-import cn.codingguide.chatgpt4j.constant.TranscriptionModel;
-import cn.codingguide.chatgpt4j.constant.TranscriptionResponseFormat;
+import cn.codingguide.chatgpt4j.constant.*;
 import cn.codingguide.chatgpt4j.domain.audio.TranscriptionRequest;
 import cn.codingguide.chatgpt4j.domain.audio.TranslationRequest;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionRequest;
@@ -16,12 +11,14 @@ import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionResponse;
 import cn.codingguide.chatgpt4j.domain.edits.EditRequest;
 import cn.codingguide.chatgpt4j.domain.edits.EditResponse;
+import cn.codingguide.chatgpt4j.domain.finetune.FineTuneRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageEditRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
 import cn.codingguide.chatgpt4j.domain.images.ImageVariation;
 import cn.codingguide.chatgpt4j.domain.models.Model;
 
+import cn.codingguide.chatgpt4j.domain.moderations.ModerationRequest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,7 +37,7 @@ public class DefaultChatGptClientTest {
     public void setUp() {
         client = DefaultChatGptClient.newBuilder()
                 // 这里替换成自己的key
-                .apiKeys(Arrays.asList("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"))
+                .apiKeys(Arrays.asList("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"))
                 .enableHttpDetailLog(true)
                 .build();
     }
@@ -190,6 +187,11 @@ public class DefaultChatGptClientTest {
 
     @Test
     public void simpleEmbeddings() {
+        System.out.println(client.embeddings("我是中国人，我爱你中国！"));
+    }
+
+    @Test
+    public void simpleEmbeddings1() {
         System.out.println(client.embeddings(Arrays.asList("我是中国人，我爱你中国！", "I love you! China.")));
     }
 
@@ -261,6 +263,64 @@ public class DefaultChatGptClientTest {
         System.out.println(client.retrieveFileContent("file-75dy5RmHbcM7aO4zjZLEv4FC"));
     }
 
+    @Test
+    public void simpleFineTune() {
+        System.out.println(client.fineTune("file-ZX7aR5aNF0ejVYFM8bCN9zNW"));
+    }
 
+    @Test
+    public void fineTune() {
+        FineTuneRequest fineTuneRequest = FineTuneRequest.newBuilder()
+                .trainingFile("file-ZX7aR5aNF0ejVYFM8bCN9zNW")
+                .suffix("codingguide-cn")
+                .model(FineTuneModel.DAVINCI)
+                .build();
+        System.out.println(client.fineTune(fineTuneRequest));
+    }
+
+    @Test
+    public void fineTunes() {
+        System.out.println(client.fineTunes());
+    }
+
+    @Test
+    public void retrieveFineTune() {
+        System.out.println(client.retrieveFineTune("ft-HP1rZOIARmWUlcAaPi4obN8O"));
+    }
+
+    @Test
+    public void cancelFineTune() {
+        System.out.println(client.cancelFineTune("ft-iLDdAoQvKH777yNvBVfGUoGq"));
+    }
+
+    @Test
+    public void fineTuneEvents() {
+        System.out.println(client.fineTuneEvents("ft-iLDdAoQvKH777yNvBVfGUoGq"));
+    }
+
+    @Test
+    public void deleteFineTuneModel() {
+        System.out.println(client.deleteFineTuneModel(""));
+    }
+
+    @Test
+    public void simpleModerations() {
+        System.out.println(client.moderations("I want to kill them."));
+    }
+
+    @Test
+    public void simpleModerations1() {
+        System.out.println(client.moderations(Arrays.asList("I want to kill them.", "I love you.")));
+    }
+
+    @Test
+    public void moderationss() {
+        ModerationRequest moderationRequest = ModerationRequest.newBuilder()
+                .addInput("I want to kill them.")
+                .addInput("I love you.")
+                .model(ModerationModel.TEXT_MODERATION_LATEST)
+                .build();
+        System.out.println(client.moderations(moderationRequest));
+    }
 
 }

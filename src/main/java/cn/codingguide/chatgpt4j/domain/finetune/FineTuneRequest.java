@@ -1,13 +1,13 @@
-package cn.codingguide.chatgpt4j.domain.finetuning;
+package cn.codingguide.chatgpt4j.domain.finetune;
 
 import java.io.Serializable;
 import java.util.Arrays;
 
+import cn.codingguide.chatgpt4j.constant.FineTuneModel;
 import org.jetbrains.annotations.NotNull;
 
 import com.google.gson.annotations.SerializedName;
 
-import cn.codingguide.chatgpt4j.constant.FineTuningModel;
 import cn.codingguide.chatgpt4j.constant.ModelSelector;
 
 /**
@@ -16,7 +16,7 @@ import cn.codingguide.chatgpt4j.constant.ModelSelector;
  * @author itlemon <lemon_jiang@aliyun.com>
  * Created on 2023-04-24
  */
-public class FineTuningRequest implements Serializable {
+public class FineTuneRequest implements Serializable {
 
     private final transient Builder builder;
 
@@ -54,7 +54,7 @@ public class FineTuningRequest implements Serializable {
 
     private final String suffix;
 
-    private FineTuningRequest(Builder builder) {
+    private FineTuneRequest(Builder builder) {
         this.builder = builder;
         this.trainingFile = builder.trainingFile;
         this.validationFile = builder.validationFile;
@@ -142,7 +142,7 @@ public class FineTuningRequest implements Serializable {
         /**
          * 非必需参数：选择的模型，当前稳定版本的模型：<a href="https://platform.openai.com/docs/models/model-endpoint-compatibility">链接</a>
          */
-        private ModelSelector model = FineTuningModel.CURIE;
+        private ModelSelector model = FineTuneModel.CURIE;
 
         /**
          * 非必需参数：训练模型的时期数，一个纪元指的是训练数据集的一个完整周期。默认值是4
@@ -254,14 +254,14 @@ public class FineTuningRequest implements Serializable {
             return this;
         }
 
-        public FineTuningRequest build() {
-            return new FineTuningRequest(this);
+        public FineTuneRequest build() {
+            return new FineTuneRequest(this);
         }
     }
 
     @Override
     public String toString() {
-        return "FineTuningRequest{" +
+        return "FineTuneRequest{" +
                 "trainingFile='" + trainingFile + '\'' +
                 ", validationFile='" + validationFile + '\'' +
                 ", model='" + model + '\'' +
