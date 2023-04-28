@@ -37,15 +37,14 @@ public class DefaultChatGptClientTest {
     public void setUp() {
         client = DefaultChatGptClient.newBuilder()
                 // 这里替换成自己的key
-                .apiKeys(Arrays.asList("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"))
+                .apiKeys(Arrays.asList("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"))
                 .enableHttpDetailLog(true)
                 .build();
     }
 
     @Test
     public void models() {
-        List<Model> models = client.models();
-        models.forEach(e -> {
+        client.models().forEach(e -> {
             System.out.print(e.getId() + " ");
             System.out.print(e.getOwnedBy() + " ");
             System.out.print(e.getObject() + " ");
@@ -321,6 +320,16 @@ public class DefaultChatGptClientTest {
                 .model(ModerationModel.TEXT_MODERATION_LATEST)
                 .build();
         System.out.println(client.moderations(moderationRequest));
+    }
+
+    @Test
+    public void engines() {
+        System.out.println(client.engines());
+    }
+
+    @Test
+    public void engine() {
+        System.out.println(client.engine("text-davinci-edit-001"));
     }
 
 }

@@ -12,12 +12,14 @@ import cn.codingguide.chatgpt4j.domain.audio.TranslationRequest;
 import cn.codingguide.chatgpt4j.domain.audio.TranslationResponse;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionRequest;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionResponse;
+import cn.codingguide.chatgpt4j.domain.common.CommonListResponse;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionResponse;
 import cn.codingguide.chatgpt4j.domain.edits.EditRequest;
 import cn.codingguide.chatgpt4j.domain.edits.EditResponse;
 import cn.codingguide.chatgpt4j.domain.embeddings.EmbeddingRequest;
 import cn.codingguide.chatgpt4j.domain.embeddings.EmbeddingResponse;
+import cn.codingguide.chatgpt4j.domain.engines.EngineItem;
 import cn.codingguide.chatgpt4j.domain.files.FileItem;
 import cn.codingguide.chatgpt4j.domain.files.FileResponse;
 import cn.codingguide.chatgpt4j.domain.finetune.*;
@@ -26,7 +28,6 @@ import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
 import cn.codingguide.chatgpt4j.domain.images.ImageVariation;
 import cn.codingguide.chatgpt4j.domain.models.Model;
-import cn.codingguide.chatgpt4j.domain.models.ModelResponse;
 import cn.codingguide.chatgpt4j.domain.moderations.ModerationRequest;
 import cn.codingguide.chatgpt4j.domain.moderations.ModerationResponse;
 import cn.codingguide.chatgpt4j.exception.ChatGptExceptionCode;
@@ -181,7 +182,7 @@ public class DefaultChatGptClient {
      * @return 模型列表
      */
     public List<Model> models() {
-        Single<ModelResponse> models = api.models();
+        Single<CommonListResponse<Model>> models = api.models();
         return models.blockingGet().getData();
     }
 
@@ -528,8 +529,8 @@ public class DefaultChatGptClient {
      *
      * @return 微调作业列表
      */
-    public FineTuneListResponse fineTunes() {
-        Single<FineTuneListResponse> fineTunes = api.fineTunes();
+    public CommonListResponse<FineTuneResponse> fineTunes() {
+        Single<CommonListResponse<FineTuneResponse>> fineTunes = api.fineTunes();
         return fineTunes.blockingGet();
     }
 
@@ -561,8 +562,8 @@ public class DefaultChatGptClient {
      * @param fineTuneId 微调作业ID
      * @return 事件列表
      */
-    public FineTuneEventListResponse fineTuneEvents(String fineTuneId) {
-        Single<FineTuneEventListResponse> events = api.fineTuneEvents(fineTuneId);
+    public CommonListResponse<FineTuneEvent> fineTuneEvents(String fineTuneId) {
+        Single<CommonListResponse<FineTuneEvent>> events = api.fineTuneEvents(fineTuneId);
         return events.blockingGet();
     }
 
@@ -606,6 +607,29 @@ public class DefaultChatGptClient {
     public ModerationResponse moderations(ModerationRequest moderation) {
         Single<ModerationResponse> moderations = api.moderations(moderation);
         return moderations.blockingGet();
+    }
+
+    /**
+     * 引擎列表，OPENAI已废弃该接口（Please use their replacement, Models, instead.）
+     *
+     * @return 引擎列表
+     */
+    @Deprecated
+    public CommonListResponse<EngineItem> engines() {
+        Single<CommonListResponse<EngineItem>> engines = api.engines();
+        return engines.blockingGet();
+    }
+
+    /**
+     * 检索引擎，OPENAI已废弃该接口（Please use their replacement, Models, instead.）
+     *
+     * @param engineId 引擎ID
+     * @return 引擎
+     */
+    @Deprecated
+    public EngineItem engine(String engineId) {
+        Single<EngineItem> engine = api.engine(engineId);
+        return engine.blockingGet();
     }
 
     private MultipartBody.Part buildAudioMultipartBodyPart(String audioPath) {

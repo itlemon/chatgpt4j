@@ -6,19 +6,20 @@ import cn.codingguide.chatgpt4j.domain.audio.TranscriptionResponse;
 import cn.codingguide.chatgpt4j.domain.audio.TranslationResponse;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionRequest;
 import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionResponse;
+import cn.codingguide.chatgpt4j.domain.common.CommonListResponse;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionRequest;
 import cn.codingguide.chatgpt4j.domain.completions.CompletionResponse;
 import cn.codingguide.chatgpt4j.domain.edits.EditRequest;
 import cn.codingguide.chatgpt4j.domain.edits.EditResponse;
 import cn.codingguide.chatgpt4j.domain.embeddings.EmbeddingRequest;
 import cn.codingguide.chatgpt4j.domain.embeddings.EmbeddingResponse;
+import cn.codingguide.chatgpt4j.domain.engines.EngineItem;
 import cn.codingguide.chatgpt4j.domain.files.FileItem;
 import cn.codingguide.chatgpt4j.domain.files.FileResponse;
 import cn.codingguide.chatgpt4j.domain.finetune.*;
 import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
 import cn.codingguide.chatgpt4j.domain.models.Model;
-import cn.codingguide.chatgpt4j.domain.models.ModelResponse;
 import cn.codingguide.chatgpt4j.domain.moderations.ModerationRequest;
 import cn.codingguide.chatgpt4j.domain.moderations.ModerationResponse;
 import io.reactivex.Single;
@@ -49,7 +50,7 @@ public interface OpenAiApi {
      * @return model列表
      */
     @GET("v1/models")
-    Single<ModelResponse> models();
+    Single<CommonListResponse<Model>> models();
 
     /**
      * <a href="https://platform.openai.com/docs/api-reference/models/retrieve">获取Open AI模型详情</a>
@@ -223,7 +224,7 @@ public interface OpenAiApi {
      * @return 微调作业列表
      */
     @GET("v1/fine-tunes")
-    Single<FineTuneListResponse> fineTunes();
+    Single<CommonListResponse<FineTuneResponse>> fineTunes();
 
     /**
      * 检索微调作业
@@ -250,7 +251,7 @@ public interface OpenAiApi {
      * @return 微调作业事件列表
      */
     @GET("v1/fine-tunes/{fine_tune_id}/events")
-    Single<FineTuneEventListResponse> fineTuneEvents(@Path("fine_tune_id") String fineTuneId);
+    Single<CommonListResponse<FineTuneEvent>> fineTuneEvents(@Path("fine_tune_id") String fineTuneId);
 
     /**
      * 删除微调作业模型，只能删除自己的组织内的作业模型
@@ -269,6 +270,25 @@ public interface OpenAiApi {
      */
     @POST("v1/moderations")
     Single<ModerationResponse> moderations(@Body ModerationRequest moderation);
+
+    /**
+     * 引擎列表，OPENAI已废弃该接口（Please use their replacement, Models, instead.）
+     *
+     * @return 引擎列表
+     */
+    @Deprecated
+    @GET("v1/engines")
+    Single<CommonListResponse<EngineItem>> engines();
+
+    /**
+     * 检索引擎，OPENAI已废弃该接口（Please use their replacement, Models, instead.）
+     *
+     * @param engineId 引擎ID
+     * @return 引擎
+     */
+    @Deprecated
+    @GET("v1/engines/{engine_id}")
+    Single<EngineItem> engine(@Path("engine_id") String engineId);
 
 
 }

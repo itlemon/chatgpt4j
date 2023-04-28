@@ -1,19 +1,23 @@
-package cn.codingguide.chatgpt4j.domain.models;
+package cn.codingguide.chatgpt4j.domain.common;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * ChatGPT模型返回体
- *
  * @author itlemon <lemon_jiang@aliyun.com>
- * Created on 2023-04-04
+ * Created on 2023-04-29
  */
-public class ModelResponse implements Serializable {
+public class CommonListResponse<T> implements Serializable {
 
+    /**
+     * 数据模型，例如list
+     */
     private String object;
 
-    private List<Model> data;
+    /**
+     * 具体数据列表
+     */
+    private List<T> data;
 
     public String getObject() {
         return object;
@@ -23,17 +27,17 @@ public class ModelResponse implements Serializable {
         this.object = object;
     }
 
-    public List<Model> getData() {
+    public List<T> getData() {
         return data;
     }
 
-    public void setData(List<Model> data) {
+    public void setData(List<T> data) {
         this.data = data;
     }
 
     @Override
     public String toString() {
-        return "ModelResponse{" +
+        return "CommonListResponse{" +
                 "object='" + object + '\'' +
                 ", data=" + data +
                 '}';
