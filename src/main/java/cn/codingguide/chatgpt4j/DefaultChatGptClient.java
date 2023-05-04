@@ -114,7 +114,7 @@ public class DefaultChatGptClient {
         // 设置okHttpClient
         okHttpClient = warpOkHttpClient(Objects.isNull(builder.okHttpClient) ? okHttpClient() : builder.okHttpClient,
                 builder.proxy,
-                builder.enableHttpDetailLog);
+                builder.logLevel);
 
         // 设置OpenAiApi
         api = new Retrofit.Builder()
@@ -155,20 +155,20 @@ public class DefaultChatGptClient {
     /**
      * 将用户自定义的okHttpClient包装一下，主要是设置了请求头
      *
-     * @param okHttpClient        用户自定义okHttpClient
-     * @param enableHttpDetailLog 是否开启Http请求的详细日志
+     * @param okHttpClient 用户自定义okHttpClient
+     * @param logLevel     日志级别
      * @return 包装后的okHttpClient
      */
-    private OkHttpClient warpOkHttpClient(OkHttpClient okHttpClient, Proxy proxy, boolean enableHttpDetailLog) {
+    private OkHttpClient warpOkHttpClient(OkHttpClient okHttpClient, Proxy proxy, HttpLoggingInterceptor.Level logLevel) {
         OkHttpClient.Builder builder = okHttpClient.newBuilder();
-        if (!Objects.isNull(proxy)) {
+        if (Objects.nonNull(proxy)) {
             // 以显示设置的proxy为准，可以覆盖自定义okHttpClient中的代理
             builder.proxy(proxy);
         }
-        if (enableHttpDetailLog) {
+        if (Objects.nonNull(logLevel)) {
             HttpLoggingInterceptor loggingInterceptor =
                     new HttpLoggingInterceptor(message -> log.info("okHttpClientDetailLog: {}", message));
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            loggingInterceptor.setLevel(logLevel);
             builder.addInterceptor(loggingInterceptor);
         }
         return builder
@@ -699,7 +699,7 @@ public class DefaultChatGptClient {
 
         private KeySelectorStrategy<List<String>, String> keySelectorStrategy;
 
-        private boolean enableHttpDetailLog;
+        private HttpLoggingInterceptor.Level logLevel = HttpLoggingInterceptor.Level.NONE;
 
         private Builder() {
         }
@@ -773,13 +773,13 @@ public class DefaultChatGptClient {
         }
 
         /**
-         * 是否开启详细的请求日志记录
+         * 请求过程中的日志级别，分别有NONE、BASIC、HEADERS、BODY，分别无日志、基础日志、请求头日志、请求体日志，测试阶段建议开启BODY日志，以便观察请求过程
          *
-         * @param enableHttpDetailLog 是否开启详细的请求日志记录
+         * @param logLevel 日志级别
          * @return Builder
          */
-        public Builder enableHttpDetailLog(boolean enableHttpDetailLog) {
-            this.enableHttpDetailLog = enableHttpDetailLog;
+        public Builder logLevel(HttpLoggingInterceptor.Level logLevel) {
+            this.logLevel = logLevel;
             return this;
         }
 

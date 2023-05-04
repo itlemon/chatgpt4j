@@ -19,6 +19,7 @@ import cn.codingguide.chatgpt4j.domain.images.ImageVariationRequest;
 import cn.codingguide.chatgpt4j.domain.models.Model;
 
 import cn.codingguide.chatgpt4j.domain.moderations.ModerationRequest;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,8 +38,9 @@ public class DefaultChatGptClientTest {
     public void setUp() {
         client = DefaultChatGptClient.newBuilder()
                 // 这里替换成自己的key
-                .apiKeys(Arrays.asList("sk-*******"))
-                .enableHttpDetailLog(true)
+                .apiKeys(Arrays.asList("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"))
+                // 开启日志，默认是BODY日志，日志量较大，生产环境不建议开启
+                .logLevel(HttpLoggingInterceptor.Level.BODY)
                 .build();
     }
 
