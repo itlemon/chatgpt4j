@@ -241,6 +241,9 @@ public class CompletionRequest implements Serializable {
          */
         private String user;
 
+        private Builder() {
+        }
+
         public Builder model(ModelSelector model) {
             this.model = model;
             return this;

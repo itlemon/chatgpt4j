@@ -94,6 +94,9 @@ public class ImageGenerationRequest implements Serializable {
          */
         private String user;
 
+        private Builder() {
+        }
+
         public Builder prompt(String prompt) {
             this.prompt = prompt;
             return this;

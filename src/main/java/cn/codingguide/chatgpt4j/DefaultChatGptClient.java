@@ -26,7 +26,7 @@ import cn.codingguide.chatgpt4j.domain.finetune.*;
 import cn.codingguide.chatgpt4j.domain.images.ImageEditRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
-import cn.codingguide.chatgpt4j.domain.images.ImageVariation;
+import cn.codingguide.chatgpt4j.domain.images.ImageVariationRequest;
 import cn.codingguide.chatgpt4j.domain.models.Model;
 import cn.codingguide.chatgpt4j.domain.moderations.ModerationRequest;
 import cn.codingguide.chatgpt4j.domain.moderations.ModerationResponse;
@@ -309,7 +309,7 @@ public class DefaultChatGptClient {
      * @param image 图片参数
      * @return 重做后的图片
      */
-    public ImageResponse imageVariations(ImageVariation image) {
+    public ImageResponse imageVariations(ImageVariationRequest image) {
         // 这里做一些基础参数校验，其他的参数基本依赖OPENAI的校验，因为对于部分空值，在构建请求参数的时候就会出现异常
         ParamValidator.validateImageEditRequest(image.getImage(), null);
         // 构建请求参数
@@ -701,7 +701,7 @@ public class DefaultChatGptClient {
 
         private boolean enableHttpDetailLog;
 
-        public Builder() {
+        private Builder() {
         }
 
         /**

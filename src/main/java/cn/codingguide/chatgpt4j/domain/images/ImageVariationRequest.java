@@ -13,7 +13,7 @@ import cn.codingguide.chatgpt4j.constant.ImageSize;
  * @author itlemon <lemon_jiang@aliyun.com>
  * Created on 2023-04-19
  */
-public class ImageVariation implements Serializable {
+public class ImageVariationRequest implements Serializable {
 
     private final transient Builder builder;
 
@@ -28,7 +28,7 @@ public class ImageVariation implements Serializable {
 
     private final String user;
 
-    private ImageVariation(Builder builder) {
+    private ImageVariationRequest(Builder builder) {
         this.builder = builder;
         this.image = builder.image;
         this.n = builder.countOfCompletion4EachPrompt;
@@ -94,6 +94,9 @@ public class ImageVariation implements Serializable {
          */
         private String user;
 
+        private Builder() {
+        }
+
         public Builder image(String image) {
             this.image = image;
             return this;
@@ -119,15 +122,15 @@ public class ImageVariation implements Serializable {
             return this;
         }
 
-        public ImageVariation build() {
-            return new ImageVariation(this);
+        public ImageVariationRequest build() {
+            return new ImageVariationRequest(this);
         }
 
     }
 
     @Override
     public String toString() {
-        return "ImageVariation{" +
+        return "ImageVariationRequest{" +
                 "image='" + image + '\'' +
                 ", n=" + n +
                 ", size='" + size + '\'' +

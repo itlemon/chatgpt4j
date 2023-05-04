@@ -194,6 +194,9 @@ public class FineTuneRequest implements Serializable {
          */
         private String suffix;
 
+        private Builder() {
+        }
+
         public Builder trainingFile(String trainingFile) {
             this.trainingFile = trainingFile;
             return this;

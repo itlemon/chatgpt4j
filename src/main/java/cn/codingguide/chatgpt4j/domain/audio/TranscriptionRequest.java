@@ -100,6 +100,9 @@ public class TranscriptionRequest {
          */
         private String language;
 
+        private Builder() {
+        }
+
         public Builder file(String file) {
             this.file = file;
             return this;

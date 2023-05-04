@@ -87,6 +87,9 @@ public class TranslationRequest {
          */
         private Double temperature = 0D;
 
+        private Builder() {
+        }
+
         public Builder file(String file) {
             this.file = file;
             return this;

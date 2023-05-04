@@ -15,7 +15,7 @@ import cn.codingguide.chatgpt4j.domain.finetune.FineTuneRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageEditRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageGenerationRequest;
 import cn.codingguide.chatgpt4j.domain.images.ImageResponse;
-import cn.codingguide.chatgpt4j.domain.images.ImageVariation;
+import cn.codingguide.chatgpt4j.domain.images.ImageVariationRequest;
 import cn.codingguide.chatgpt4j.domain.models.Model;
 
 import cn.codingguide.chatgpt4j.domain.moderations.ModerationRequest;
@@ -37,7 +37,7 @@ public class DefaultChatGptClientTest {
     public void setUp() {
         client = DefaultChatGptClient.newBuilder()
                 // 这里替换成自己的key
-                .apiKeys(Arrays.asList("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"))
+                .apiKeys(Arrays.asList("sk-*******"))
                 .enableHttpDetailLog(true)
                 .build();
     }
@@ -176,7 +176,7 @@ public class DefaultChatGptClientTest {
 
     @Test
     public void imageVariations() {
-        ImageVariation imageVariation = ImageVariation.newBuilder()
+        ImageVariationRequest imageVariation = ImageVariationRequest.newBuilder()
                 .image("/Users/xxxx/Desktop/test.png")
                 .size(ImageSize.SIZE_256)
                 .build();

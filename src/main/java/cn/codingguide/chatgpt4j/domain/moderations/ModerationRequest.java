@@ -55,12 +55,15 @@ public class ModerationRequest implements Serializable {
          */
         private ModelSelector model = ModerationModel.TEXT_MODERATION_LATEST;
 
+        private Builder() {
+        }
+
         public Builder addInput(String input) {
             this.input.add(input);
             return this;
         }
 
-        public Builder addAllInput(@NotNull List<String>input) {
+        public Builder addAllInput(@NotNull List<String> input) {
             this.input.addAll(input);
             return this;
         }

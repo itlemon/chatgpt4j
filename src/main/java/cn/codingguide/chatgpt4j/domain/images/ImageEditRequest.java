@@ -119,6 +119,9 @@ public class ImageEditRequest implements Serializable {
          */
         private String user;
 
+        private Builder() {
+        }
+
         public Builder image(String image) {
             this.image = image;
             return this;

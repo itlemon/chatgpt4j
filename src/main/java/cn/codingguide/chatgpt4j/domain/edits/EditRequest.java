@@ -110,6 +110,9 @@ public class EditRequest implements Serializable {
          */
         private Double topP = 1D;
 
+        private Builder() {
+        }
+
         public Builder model(ModelSelector model) {
             this.model = model;
             return this;
