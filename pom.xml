@@ -4,7 +4,7 @@
 
     <groupId>cn.codingguide</groupId>
     <artifactId>chatgpt4j</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>chatgpt4j</name>
     <description>chatgpt4j is a Java client library for accessing the ChatGPT API. It supports all OpenAI interfaces. A
