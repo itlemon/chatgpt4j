@@ -6,6 +6,7 @@ package cn.codingguide.chatgpt4j.key;
  * @author itlemon
  * Created on 2023-04-04
  */
+@FunctionalInterface
 public interface KeySelectorStrategy<T, R> {
 
     /**

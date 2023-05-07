@@ -11,7 +11,7 @@ chatgpt4j 是一个用于访问 ChatGPT API 的 Java 客户端库，支持 OpenA
 - 支持自定义 Http 请求过程的日志级别
 - 支持自定义模型定义，方便后续在未更新该 SDK 的情况下，也可以使用到最新的 OpenAI 模型
 - 支持接口请求参数使用 Builder 模型来构建，极大地简化参数构建过程
-- 支持代理模式，解决大陆无法访问 OpenAI 接口的问题
+- 支持 Http 或者 Socks 代理模式，解决大陆无法访问 OpenAI 接口的问题
 - 更多特性，敬请期待...
 
 ## 更新日志📝
@@ -52,7 +52,40 @@ chatgpt4j 是一个用于访问 ChatGPT API 的 Java 客户端库，支持 OpenA
 </dependency>
 ```
 
+或者直接 clone 本项目到本地，将其安装到本地仓库中。
+
 ### 2.默认客户端使用案例
 
 默认客户端请参考代码：[cn.codingguide.chatgpt4j.DefaultChatGptClient](https://github.com/itlemon/chatgpt4j/blob/master/src/main/java/cn/codingguide/chatgpt4j/DefaultChatGptClient.java)
+
+创建一个默认的客户端，代码案例如下：
+
+```java
+public class DefaultChatGptClientTest {
+
+    private DefaultChatGptClient client;
+
+    @Before
+    public void setUp() {
+        client = DefaultChatGptClient.newBuilder()
+                // 这里替换成自己的key，该参数是必填项
+                .apiKeys(Arrays.asList("sk-******"))
+                // 设置apiHost，如果没有自己的api地址，可以不用设置，默认是：https://api.openai.com/
+                .apiHost("https://xxxxx/")
+                // 设置proxy代理，方便大陆通过代理访问OpenAI，支持Http代理或者Socks代理，两者只需要设置其一即可，两者都设置，后者将覆盖前者
+                .proxyHttp("127.0.0.1", 8080)
+                .proxySocks("127.0.0.1", 8081)
+                // 支持自定义OkHttpClient，该参数非必填，没有填写将使用默认的OkHttpClient
+                .okHttpClient(null)
+                // 设置apiKey选择策略，该参数是非必填项，如果没有填写，将使用默认的随机选择器（RandomKeySelectorStrategy），用户可以通过实现KeySelectorStrategy接口提供自定义选择器
+                .keySelectorStrategy(new RandomKeySelectorStrategy())
+                // 设置开启日志，非必填项，默认没有打印请求日志，测试期间可以设置BODY日志，日志量较大，生产环境不建议开启
+                .logLevel(HttpLoggingInterceptor.Level.BODY)
+                .build();
+    }
+
+}
+```
+
+
 

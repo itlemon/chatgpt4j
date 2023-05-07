@@ -745,7 +745,7 @@ public class DefaultChatGptClient {
          * @param port 代理端口
          * @return Builder
          */
-        public Builder proxySocks5(String ip, int port) {
+        public Builder proxySocks(String ip, int port) {
             this.proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(ip, port));
             return this;
         }
