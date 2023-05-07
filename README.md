@@ -87,5 +87,53 @@ public class DefaultChatGptClientTest {
 }
 ```
 
+上述案例中，OkHttpClient 没有设置（或者设置为null）将采用默认的 OkHttpClient，该 Client 配置如下所示：
 
+```java
+private OkHttpClient okHttpClient() {
+    return new OkHttpClient.Builder()
+        // 默认客户端没有代理
+        .proxy(Proxy.NO_PROXY)
+        .addInterceptor(new ResponseInterceptor())
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .build();
+}
+```
 
+该默认的 Client 中，各类超时时间设置的是 30s，且没有设置代理，代理由 DefaultChatGptClient 中的 proxyHttp 或者 proxySocks 来设置，同理，http 请求日志级别，也由 DefaultChatGptClient 中的 logLevel 来统一设置。
+
+用户如果有需要自定义 OkHttpClient，那么只需要简单定义一个 OkHttpClient 即可，通过 DefaultChatGptClient 中的 okHttpClient 方法设置进来。
+
+```java
+OkHttpClient okHttpClient = new OkHttpClient
+    .Builder()
+    // 自定义拦截器Interceptor，实现请求前后的拦截
+    .addInterceptor(Interceptor)
+    // 自定义超时时间
+    .connectTimeout(10, TimeUnit.SECONDS)
+    .writeTimeout(10, TimeUnit.SECONDS)
+    .readTimeout(10, TimeUnit.SECONDS)
+    .build();
+```
+
+DefaultChatGptClient 是一个线程安全的类，可以全局保留一个即可，可以在项目启动的时候创建一个缓存起来，后续复用即可。最简单的客户端构建代码如下所示：
+
+```java
+public class DefaultChatGptClientTest {
+
+    private DefaultChatGptClient client;
+
+    @Before
+    public void setUp() {
+        client = DefaultChatGptClient.newBuilder()
+                // 这里替换成自己的key，该参数是必填项
+                .apiKeys(Arrays.asList("sk-******"))
+                .build();
+    }
+
+}
+```
+
+### 3.接口使用案例

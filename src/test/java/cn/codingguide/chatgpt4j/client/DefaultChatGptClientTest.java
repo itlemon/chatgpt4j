@@ -39,16 +39,16 @@ public class DefaultChatGptClientTest {
     public void setUp() {
         client = DefaultChatGptClient.newBuilder()
                 // 这里替换成自己的key，该参数是必填项
-                .apiKeys(Arrays.asList("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"))
+                .apiKeys(Arrays.asList("sk-******"))
                 // 设置apiHost，如果没有自己的api地址，可以不用设置，默认是：https://api.openai.com/
-                .apiHost("https://xxxxx/")
+                // .apiHost("https://xxxxx/")
                 // 设置proxy代理，方便大陆通过代理访问OpenAI，支持Http代理或者Socks代理，两者只需要设置其一即可，两者都设置，后者将覆盖前者
-                .proxyHttp("127.0.0.1", 8080)
-                .proxySocks("127.0.0.1", 8081)
+                // .proxyHttp("127.0.0.1", 8080)
+                // .proxySocks("127.0.0.1", 8081)
                 // 支持自定义OkHttpClient，该参数非必填，没有填写将使用默认的OkHttpClient
-                .okHttpClient(null)
+                // .okHttpClient(null)
                 // 设置apiKey选择策略，该参数是非必填项，如果没有填写，将使用默认的随机选择器（RandomKeySelectorStrategy），用户可以通过实现KeySelectorStrategy接口提供自定义选择器
-                .keySelectorStrategy(new RandomKeySelectorStrategy())
+                // .keySelectorStrategy(new RandomKeySelectorStrategy())
                 // 设置开启日志，非必填项，默认没有打印请求日志，测试期间可以设置BODY日志，日志量较大，生产环境不建议开启
                 .logLevel(HttpLoggingInterceptor.Level.BODY)
                 .build();
