@@ -138,6 +138,8 @@ public class DefaultChatGptClientTest {
 
 ### 3.接口使用案例
 
+下面的接口案例中，对每一个接口都进行了测试，读者可以 clone 代码到本地，自行测试使用。
+
 ```java
 public class DefaultChatGptClientTest {
 
