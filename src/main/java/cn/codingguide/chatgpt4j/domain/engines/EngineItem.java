@@ -3,7 +3,7 @@ package cn.codingguide.chatgpt4j.domain.engines;
 import java.io.Serializable;
 
 /**
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-29
  */
 public class EngineItem implements Serializable {

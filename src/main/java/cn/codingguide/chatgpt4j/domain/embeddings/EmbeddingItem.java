@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-20
  */
 public class EmbeddingItem implements Serializable {

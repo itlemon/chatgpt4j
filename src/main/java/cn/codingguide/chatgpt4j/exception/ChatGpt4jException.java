@@ -3,7 +3,7 @@ package cn.codingguide.chatgpt4j.exception;
 import cn.hutool.core.util.StrUtil;
 
 /**
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-04
  */
 public class ChatGpt4jException extends RuntimeException {

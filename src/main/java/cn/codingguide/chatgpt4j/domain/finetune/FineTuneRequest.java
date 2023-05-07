@@ -13,7 +13,7 @@ import cn.codingguide.chatgpt4j.constant.ModelSelector;
 /**
  * 创建一个从给定数据集微调指定模型的作业。
  *
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-24
  */
 public class FineTuneRequest implements Serializable {

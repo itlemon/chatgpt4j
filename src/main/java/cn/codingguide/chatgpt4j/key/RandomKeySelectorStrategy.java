@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 默认的Key选择策略，随机选择
  *
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-04
  */
 public class RandomKeySelectorStrategy implements KeySelectorStrategy<List<String>, String> {

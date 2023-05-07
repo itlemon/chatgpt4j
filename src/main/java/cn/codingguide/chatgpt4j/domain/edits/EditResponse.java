@@ -7,7 +7,7 @@ import cn.codingguide.chatgpt4j.domain.common.Choice;
 import cn.codingguide.chatgpt4j.domain.common.Usage;
 
 /**
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-19
  */
 public class EditResponse implements Serializable {

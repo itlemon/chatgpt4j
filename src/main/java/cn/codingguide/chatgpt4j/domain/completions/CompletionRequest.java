@@ -12,7 +12,7 @@ import cn.codingguide.chatgpt4j.constant.CompletionsModel;
 import cn.codingguide.chatgpt4j.constant.ModelSelector;
 
 /**
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-05
  */
 public class CompletionRequest implements Serializable {

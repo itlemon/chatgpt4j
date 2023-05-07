@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 /**
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-04
  */
 public class ResponseInterceptor implements Interceptor {

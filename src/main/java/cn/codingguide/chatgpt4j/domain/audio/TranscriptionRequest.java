@@ -7,7 +7,7 @@ import cn.codingguide.chatgpt4j.constant.TranscriptionModel;
 import cn.codingguide.chatgpt4j.constant.TranscriptionResponseFormat;
 
 /**
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-21
  */
 public class TranscriptionRequest {

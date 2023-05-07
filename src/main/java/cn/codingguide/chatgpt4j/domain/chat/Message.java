@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import cn.codingguide.chatgpt4j.constant.Role;
 
 /**
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-18
  */
 public class Message implements Serializable {

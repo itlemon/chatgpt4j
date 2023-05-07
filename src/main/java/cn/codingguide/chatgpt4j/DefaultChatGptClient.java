@@ -63,7 +63,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * 默认的ChatGPT客户端
  *
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-04
  */
 public class DefaultChatGptClient {
@@ -435,10 +435,10 @@ public class DefaultChatGptClient {
      * 上传文件，上传的文件必须是一个JSONL文件，比如一个test.txt，它的内容，必须是每一行都是一个json对象，json中有两个字段：
      * 分别是prompt，它是必需项，还有一个是completion，它是可选项。prompt 键指定了模型应该如何开始生成文本，而 completion 键则指定了模型应该生成多少文本。
      * 例如，文本文件test.txt，它的内容是：
-     * <p>
-     * {"prompt": "Hello, my name is", "completion": ""}<br/>
-     * {"prompt": "What is the meaning of life?", "completion": ""}
-     * </p>
+     * <pre>
+     * {@code {"prompt": "Hello, my name is", "completion": ""}}
+     * {@code {"prompt": "What is the meaning of life?", "completion": ""}}
+     * </pre>
      *
      * @param filePath 文件路径
      * @return 上传结果
@@ -451,10 +451,10 @@ public class DefaultChatGptClient {
      * 上传文件，上传的文件必须是一个JSONL文件，比如一个test.txt，它的内容，必须是每一行都是一个json对象，json中有两个字段：
      * 分别是prompt，它是必需项，还有一个是completion，它是可选项。prompt 键指定了模型应该如何开始生成文本，而 completion 键则指定了模型应该生成多少文本。
      * 例如，文本文件test.txt，它的内容是：
-     * <p>
-     * {"prompt": "Hello, my name is", "completion": ""}<br/>
-     * {"prompt": "What is the meaning of life?", "completion": ""}
-     * </p>
+     * <pre>
+     * {@code {"prompt": "Hello, my name is", "completion": ""}}
+     * {@code {"prompt": "What is the meaning of life?", "completion": ""}}
+     * </pre>
      *
      * @param filePath 文件路径
      * @param purpose  文件用途：官网默认值是fine-tune

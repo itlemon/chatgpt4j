@@ -10,6 +10,8 @@ chatgpt4j 是一个用于访问 ChatGPT API 的 Java 客户端库，支持 OpenA
 - 支持自定义 OkHttpClient
 - 支持自定义 Http 请求过程的日志级别
 - 支持自定义模型定义，方便后续在未更新该 SDK 的情况下，也可以使用到最新的 OpenAI 模型
+- 支持接口请求参数使用 Builder 模型来构建，极大地简化参数构建过程
+- 支持代理模式，解决大陆无法访问 OpenAI 接口的问题
 - 更多特性，敬请期待...
 
 ## 更新日志📝
@@ -35,4 +37,22 @@ chatgpt4j 是一个用于访问 ChatGPT API 的 Java 客户端库，支持 OpenA
 |     Engines      | 管理引擎的相关接口，这类接口已经废弃，目前由 Models 来代替。                                                                           | 1.获取已有引擎列表<br />2.检索引擎                                                                                      |  ✅   |
 
 ## 快速开始🚀
+
+本项目所有的接口都经过了详细的测试，读者可以参考测试类：[cn.codingguide.chatgpt4j.client.DefaultChatGptClientTest](https://github.com/itlemon/chatgpt4j/blob/master/src/test/java/cn/codingguide/chatgpt4j/client/DefaultChatGptClientTest.java)
+
+### 1.导入pom依赖
+
+目前最新版本是 1.0.0，读者可以从[中央仓库](https://mvnrepository.com/artifact/cn.codingguide/chatgpt4j)搜索最新版本导入到pom中即可。
+
+```xml
+<dependency>
+    <groupId>cn.codingguide</groupId>
+    <artifactId>chatgpt4j</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+### 2.默认客户端使用案例
+
+默认客户端请参考代码：[cn.codingguide.chatgpt4j.DefaultChatGptClient](https://github.com/itlemon/chatgpt4j/blob/master/src/main/java/cn/codingguide/chatgpt4j/DefaultChatGptClient.java)
 

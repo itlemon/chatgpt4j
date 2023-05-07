@@ -6,7 +6,7 @@ import java.util.Arrays;
 import cn.codingguide.chatgpt4j.domain.common.Usage;
 
 /**
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-18
  */
 public class ChatCompletionResponse implements Serializable {

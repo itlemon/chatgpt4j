@@ -3,7 +3,7 @@ package cn.codingguide.chatgpt4j.constant;
 /**
  * 模型选择器，可实现该接口实现模型选择
  *
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-17
  */
 public interface ModelSelector {

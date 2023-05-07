@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * ChatGPT模型权限
  *
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-04
  */
 public class Permission implements Serializable {

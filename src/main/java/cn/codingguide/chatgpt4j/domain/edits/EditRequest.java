@@ -10,7 +10,7 @@ import cn.codingguide.chatgpt4j.constant.EditModel;
 import cn.codingguide.chatgpt4j.constant.ModelSelector;
 
 /**
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-19
  */
 public class EditRequest implements Serializable {

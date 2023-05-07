@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * ChatGPT模型
  *
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-04
  */
 public class Model implements Serializable {

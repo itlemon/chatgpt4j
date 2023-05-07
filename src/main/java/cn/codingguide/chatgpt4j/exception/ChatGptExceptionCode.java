@@ -3,7 +3,7 @@ package cn.codingguide.chatgpt4j.exception;
 /**
  * 错误码及说明
  *
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-04
  */
 public enum ChatGptExceptionCode implements IExceptionCode {

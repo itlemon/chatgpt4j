@@ -37,7 +37,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Streaming;
 
 /**
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-04
  */
 public interface OpenAiApi {

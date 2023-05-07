@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 import cn.codingguide.chatgpt4j.constant.ImageSize;
 
 /**
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-19
  */
 public class ImageVariationRequest implements Serializable {

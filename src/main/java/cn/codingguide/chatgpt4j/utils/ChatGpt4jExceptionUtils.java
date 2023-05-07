@@ -6,7 +6,7 @@ import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 
 /**
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-23
  */
 public class ChatGpt4jExceptionUtils {

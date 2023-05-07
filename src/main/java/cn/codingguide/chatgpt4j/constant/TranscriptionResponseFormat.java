@@ -1,7 +1,7 @@
 package cn.codingguide.chatgpt4j.constant;
 
 /**
- * @author itlemon <lemon_jiang@aliyun.com>
+ * @author itlemon
  * Created on 2023-04-21
  */
 public enum TranscriptionResponseFormat {
