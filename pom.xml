@@ -43,10 +43,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>4.13.2</junit.version>
         <guava.version>31.1-jre</guava.version>
-        <hutool.version>5.8.16</hutool.version>
+        <hutool.version>5.8.18</hutool.version>
         <slf4j.version>2.0.7</slf4j.version>
-        <okhttp3.version>4.10.0</okhttp3.version>
+        <okhttp3.version>4.11.0</okhttp3.version>
         <retrofit2.version>2.9.0</retrofit2.version>
+        <jetbrains-annotations.version>24.0.1</jetbrains-annotations.version>
     </properties>
 
     <dependencies>
